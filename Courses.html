@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!--This is the main HTML file for the Coaching Class Management System.
+Many of the codes will contain these comments for my own understanding in the future and others as well.
+My comments will always end with the letter V-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <!--These are the starting stuff. Charset and name are basic starters.-->
+  <title>Coaching Class Management System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!--V: tailwindcss is a very convininent script. It makes everything fancy to my understanding.-->
+  <style>
+    body {
+      background-color: #121212;
+    }
+  </style>
+</head>
+<body class="text-white font-sans">
+
+  <!-- Navbar -->
+   <!--# V: This is the top right section of the website where the buttons are. Hyperlink references which when clicked, send you to the page mentioned.-->
+  <nav class="bg-pink-600 p-4 shadow-lg">
+    <div class="container mx-auto flex justify-between items-center"> <!--# This is fancy stuff that tailwindcss can let me do. 
+      Things like auto configure sizes, positioning and others. -->
+      <h1 class="text-2xl font-bold tracking-wide">Coaching Class System</h1>
+      <div class="space-x-4">
+        <a href="Main.html" class="hover:text-gray-300 transition">Home</a>
+        <a href="Courses.html" class="hover:text-gray-300 transition">Courses</a>
+        <a href="Instructors.html" class="hover:text-gray-300 transition">Instructors</a>
+        <a href="login.html" class="hover:text-gray-300 transition">Login</a>
+      </div>
+    </div>
+  </nav>
+</body>
+</html>
