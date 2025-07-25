@@ -8,7 +8,7 @@ ITR project
 - About us (Contacts)
 
 # Member roles:
-- Reva Shelke : Frontend Designer
-- Kedarnath Sarang : Backend programmer
-- Rushikesh mangle : Backend programmer
-- Samarthya pagre : Data provider / Quality assurance
+- R S : Frontend Designer
+- K S : Backend programmer
+- R M : Backend programmer
+- S P : Data provider / Quality assurance
