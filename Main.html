@@ -1,115 +1,94 @@
 <!DOCTYPE html>
-<!--This is the main HTML file for the Coaching Class Management System.
-Many of the codes will contain these comments for my own understanding in the future and others as well.
-My comments will always end with the letter V-->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <!--These are the starting stuff. Charset and name are basic starters.-->
-  <title>Coaching Class Management System</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!--V: tailwindcss is a very convininent script. It makes everything fancy to my understanding.-->
-  <style>
-    body {
-      background-color: #121212;
-    }
-  </style>
+  <title>Home Page</title>
+<link rel="stylesheet" href="style.css" />
 </head>
-<body class="text-white font-sans">
+<body>
+  <div class="container">
 
-  <!-- Navbar -->
-   <!--# V: This is the top right section of the website where the buttons are. Hyperlink references which when clicked, send you to the page mentioned.-->
-  <nav class="bg-pink-600 p-4 shadow-lg">
-    <div class="container mx-auto flex justify-between items-center"> <!--# This is fancy stuff that tailwindcss can let me do. 
-      Things like auto configure sizes, positioning and others. -->
-      <h1 class="text-2xl font-bold tracking-wide">Coaching Class System</h1>
-      <div class="space-x-4">
-        <a href="Main.html" class="hover:text-gray-300 transition">Home</a>
-        <a href="Courses.html" class="hover:text-gray-300 transition">Courses</a>
-        <a href="Instructors.html" class="hover:text-gray-300 transition">Instructors</a>
-        <a href="login.html" class="hover:text-gray-300 transition">Login</a>
+    <!-- Header -->
+    <div class="header">
+      <div class="flex">
+        <div class="logo">Logo</div>
+        <div>
+          <div class="class-title">Name of Classes</div>
+          <div class="class-name"><a href="#more-classes">More of classes</a></div>
+        </div>
+        <div class="menu">
+          <button class="menu-button">☰</button>
+          <div class="dropdown">
+            <a href="#online-courses">Online Courses</a>
+            <a href="#offline-courses">Offline Courses</a>
+            <a href="#top-students">Top Students</a>
+            <a href="#top-tutors">Top Tutors</a>
+          </div>
+        </div>
+      </div>
+      <div class="highlights">Highlights</div>
+    </div>
+
+    <!-- Top Students and Tutors -->
+    <div class="section">
+      <div class="flex">
+        <div id="top-students">
+          <h3>Top Students from our classes</h3>
+          <div class="cards" draggable="true">
+            <div class="card">Image<br>Year<br>%<br>Class<br>Name</div>
+            <div class="card">Image<br>Year<br>%<br>Class<br>Name</div>
+            <div class="card">Image<br>Year<br>%<br>Class<br>Name</div>
+          </div>
+        </div>
+        <div id="top-tutors">
+          <h3>Top Tutors of our classes</h3>
+          <div class="cards" draggable="true">
+            <div class="card">Image<br>Subject<br>Qualification<br>Name</div>
+            <div class="card">Image<br>Subject<br>Qualification<br>Name</div>
+            <div class="card">Image<br>Subject<br>Qualification<br>Name</div>
+          </div>
+        </div>
       </div>
     </div>
-  </nav>
 
-  <!-- Hero Section -->
-   <!-- V: This is the first header of the website, contains the title and subtext. -->
-  <section class="py-20 px-4 text-center">
-    <h2 class="text-4xl md:text-5xl font-extrabold mb-4 text-pink-400">
-      Welcome to the Coaching Class Management System
-    </h2>
-    <p class="text-lg text-gray-300 max-w-2xl mx-auto">
-      Manage your coaching classes with ease. Track courses, instructors and more — all from one place.
-    </p>
-  </section>
-
-  <!-- Courses Preview -->
-  <section class="px-6 py-10 bg-[#1E1E1E]">
-    <h3 class="text-2xl font-semibold text-pink-400 mb-6">Featured Courses</h3>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-gray-900 p-4 rounded-xl shadow hover:shadow-pink-500/30 transition">
-        <h4 class="text-xl font-bold">Mathematics</h4>
-        <p class="text-gray-400 mt-2">Algebra, Geometry, and more .</p>
+    <!-- Online Course -->
+    <div class="section" id="online-courses">
+      <h3>Online Course</h3>
+      <ul class="checklist">
+        <li>Recorded content</li>
+        <li>Top Tutor</li>
+        <li>Notes being provided [free]</li>
+        <li>Daily Test</li>
+        <li>100% Daily Doubt session</li>
+      </ul>
+      <div class="cards">
+        <div class="card">Course Name 1</div>
+        <div class="card">Course Name 2</div>
+        <div class="card">Course Name 3</div>
+        <div class="card">Course Name 4</div>
       </div>
-      <div class="bg-gray-900 p-4 rounded-xl shadow hover:shadow-pink-500/30 transition">
-        <h4 class="text-xl font-bold">Physics Basics</h4>
-        <p class="text-gray-400 mt-2">Newton's Laws, motion, and energy in an engaging format.</p>
-      </div>
-      <div class="bg-gray-900 p-4 rounded-xl shadow hover:shadow-pink-500/30 transition">
-        <h4 class="text-xl font-bold">Chemistry Essentials</h4>
-        <p class="text-gray-400 mt-2">Atoms, molecules, and chemical reactions made simple.</p>
-      </div>
+      <a href="#online-courses"><button class="know-more">Know More</button></a>
     </div>
-  </section>
 
-  <!-- Instructors Preview -->
-  <section class="px-6 py-10">
-    <h3 class="text-2xl font-semibold text-pink-400 mb-6">Meet Our Instructors</h3>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-gray-900 p-4 rounded-xl text-center shadow">
-        <img src="https://via.placeholder.com/100" alt="Instructor" class="mx-auto mb-3 rounded-full">
-        <h4 class="font-bold text-lg">Anita Sharma</h4>
-        <p class="text-gray-400 text-sm">Mathematics Expert with 10+ years of experience</p>
+    <!-- Offline Course -->
+    <div class="section" id="offline-courses">
+      <h3>Offline Course</h3>
+      <ul class="checklist">
+        <li>Top Tutor</li>
+        <li>Free notes are being provided</li>
+        <li>Weekly test</li>
+        <li>Monthly report</li>
+      </ul>
+      <div class="cards">
+        <div class="card">Class 1</div>
+        <div class="card">Class 2</div>
+        <div class="card">Class 3</div>
+        <div class="card">Class 4</div>
       </div>
-      <div class="bg-gray-900 p-4 rounded-xl text-center shadow">
-        <img src="https://via.placeholder.com/100" alt="Instructor" class="mx-auto mb-3 rounded-full">
-        <h4 class="font-bold text-lg">Ravi Kumar</h4>
-        <p class="text-gray-400 text-sm">Physics Guru passionate about practical learning</p>
-      </div>
-      <div class="bg-gray-900 p-4 rounded-xl text-center shadow">
-        <img src="https://via.placeholder.com/100" alt="Instructor" class="mx-auto mb-3 rounded-full">
-        <h4 class="font-bold text-lg">Sneha Patel</h4>
-        <p class="text-gray-400 text-sm">Chemistry Coach with interactive teaching methods</p>
-      </div>
+      <a href="#offline-courses"><button class="know-more">Know More</button></a>
     </div>
-  </section>
-  <!--Bhagirath pagare: math, science 
-Manisha Mhatre:marathi
-Ranjana sakhare: history, geography 
-Kharat sir: english 
-Vishnu petekr:Hindi-->
 
-  <!-- Fees Preview-->
-
-  <section class="px-6 py-10">
-    <h3 class="text-2x1 font-semibold text-pink-400 mb-6"> Fees Plans</h3>
-    <div class="bg-gray-900 p-4rounded-x1 text-center shadow">
-      <h4 class="font-bold text-lg">These are our Fee Plans</h4>
-      <p class="text-gray-400 text-sm">2000 per month for students under 10th standard
-        3000 per month for students studying in higher education
-      </p>
-    </div>
-  </section>
-
-  <!-- Login Preview -->
-  <section class="px-6 py-10 bg-[#1E1E1E] text-center">
-    <h3 class="text-2xl font-semibold text-pink-400 mb-4">Access the Portal</h3>
-    <p class="text-gray-300 mb-6">Already have an account? Login to manage your dashboard.</p>
-    <a href="login.html" class="inline-block px-6 py-2 bg-pink-600 hover:bg-pink-500 text-white font-semibold rounded-xl transition">
-      Login Now
-    </a>
-  </section>
-
+  </div>
 </body>
 </html>

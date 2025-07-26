@@ -1,0 +1,144 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  background-color: #fff;
+}
+
+.header, .section {
+  border-bottom: 2px solid #eee;
+  padding: 20px 0;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.class-title {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.class-name a {
+  text-decoration: none;
+  color: #007BFF;
+}
+
+.menu {
+  position: relative;
+}
+
+.menu-button {
+  cursor: pointer;
+  font-size: 24px;
+  background: none;
+  border: none;
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  border-radius: 5px;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.dropdown a {
+  display: block;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #333;
+  white-space: nowrap;
+}
+
+.dropdown a:hover {
+  background-color: #f0f0f0;
+}
+
+.highlights {
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 18px;
+  color: #444;
+}
+
+h3 {
+  color: #222;
+}
+
+.cards {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.card {
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  min-width: 150px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.checklist {
+  list-style: none;
+  padding-left: 0;
+}
+
+.checklist li::before {
+  content: "\2713\0020";
+  color: green;
+}
+
+button.know-more {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button.know-more:hover {
+  background-color: #0056b3;
+}
+
+@media (max-width: 768px) {
+  .flex {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .dropdown {
+    position: static;
+    width: 100%;
+  }
+  .menu:hover .dropdown {
+    display: block;
+  }
+}
