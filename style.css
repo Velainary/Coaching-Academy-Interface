@@ -91,6 +91,7 @@ h3 {
   margin-top: 10px;
   overflow-x: auto;
   padding-bottom: 10px;
+  align-self: auto;
 }
 
 .card {
