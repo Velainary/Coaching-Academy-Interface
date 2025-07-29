@@ -15,8 +15,8 @@
 
       <label for="parent-password">Password</label>
       <div class="password-wrapper">
-        <input type="password" id="student-password" name="password" required />
-        <button type="button" class="toggle-password" onclick="togglePassword()">Show</button>
+        <input type="password" id="parent-password" name="password" required />
+        <span class="eye-icon" onclick="togglePasswordVisibility()">👁️</span>
       </div>
 
       <button type="submit">Login</button>
@@ -28,15 +28,15 @@
   </div>
 
   <script>
-    function togglePassword() {
-      const passwordInput = document.getElementById("parent-password");
-      const toggleBtn = document.querySelector(".toggle-password");
+    function togglePasswordVisibility() {
+      const passwordInput = document.getElementById("student-password");
+      const eyeIcon = document.querySelector(".eye-icon");
       if (passwordInput.type === "password") {
         passwordInput.type = "text";
-        toggleBtn.textContent = "Hide";
+        eyeIcon.textContent = "🙈";
       } else {
         passwordInput.type = "password";
-        toggleBtn.textContent = "Show";
+        eyeIcon.textContent = "👁️";
       }
     }
   </script>
