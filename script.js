@@ -1,17 +1,3 @@
-function toggleDropdown() {
-  const dropdown = document.getElementById('menuDropdown');
-  dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-}
-
-// Auto-close dropdown when clicking outside
-document.addEventListener('click', function(event) {
-  const dropdown = document.getElementById('menuDropdown');
-  const menuButton = document.querySelector('.menu-button');
-  if (!dropdown.contains(event.target) && !menuButton.contains(event.target)) {
-    dropdown.style.display = 'none';
-  }
-});
-
 // Drag-to-scroll for student/tutor cards
 const studentScroll = document.getElementById('students-scroll');
 const tutorScroll = document.getElementById('tutors-scroll');
