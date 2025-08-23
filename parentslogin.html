@@ -3,20 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Student Login</title>
+  <title>Parent Login</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Navbar (reuse from main site) -->
+  <nav class="navbar">
+    <div class="logo">EduPortal</div>
+    <div class="navbar-links">
+      <a href="index.html">Home</a>
+      <a href="courses.html">Courses</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <button id="theme-toggle" class="theme-toggle">🌙 Dark Mode</button>
+  </nav>
+
+  <!-- Header -->
+  <header class="header">
+    <h1>Parent Login</h1>
+    <p>Access your child’s progress and stay connected with learning.</p>
+  </header>
+
+  <!-- Login Form -->
   <div class="login-container">
-    <h2>Parent Login</h2>
     <form action="parent-dashboard.html" method="post">
       <label for="parent-username">Username</label>
-      <input type="text" id="student-username" name="username" required />
+      <input type="text" id="parent-username" name="username" required />
 
       <label for="parent-password">Password</label>
       <div class="password-wrapper">
         <input type="password" id="parent-password" name="password" required />
-        <span class="eye-icon" onclick="togglePasswordVisibility()">👁️</span>
+        <span class="eye-icon" onclick="togglePasswordVisibility('parent-password', this)">👁️</span>
       </div>
 
       <button type="submit">Login</button>
@@ -27,18 +45,54 @@
     </form>
   </div>
 
+  <!-- Footer (reuse from main site) -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>EduPortal</h3>
+        <p>Empowering learning through technology.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="Main.html">Home</a></li>
+          <li><a href="courses.html">Courses</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <p>Email: support@eduportal.com</p>
+        <p>Phone: +91 12345 67890</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 EduPortal. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
   <script>
-    function togglePasswordVisibility() {
-      const passwordInput = document.getElementById("student-password");
-      const eyeIcon = document.querySelector(".eye-icon");
+    // Password toggle
+    function togglePasswordVisibility(inputId, icon) {
+      const passwordInput = document.getElementById(inputId);
       if (passwordInput.type === "password") {
         passwordInput.type = "text";
-        eyeIcon.textContent = "🙈";
+        icon.textContent = "🙈";
       } else {
         passwordInput.type = "password";
-        eyeIcon.textContent = "👁️";
+        icon.textContent = "👁️";
       }
     }
+
+    // Dark/Light mode toggle
+    const toggleBtn = document.getElementById("theme-toggle");
+    toggleBtn.addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+      toggleBtn.textContent = 
+        document.body.classList.contains("dark-mode") ? "☀️ Light Mode" : "🌙 Dark Mode";
+    });
   </script>
 </body>
 </html>

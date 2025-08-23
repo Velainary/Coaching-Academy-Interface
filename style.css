@@ -6,7 +6,7 @@
   --primary-color: #F4ACB7;
   --text-color: #000000;
   --footer-bg: #F4ACB7;
-  --footer-text: #fff;
+  --footer-text: #000000;
 }
 
 /* Dark Mode */
@@ -17,7 +17,7 @@
   --primary-color: #FFCAD4;
   --text-color: #ffffff;
   --footer-bg: #111;
-  --footer-text: #ccc;
+  --footer-text: #ffffff;
 }
 
 body {
@@ -234,4 +234,89 @@ button:hover, .theme-toggle:hover {
   padding-top: 15px;
   font-size: 0.9rem;
   color: #888;
+}
+
+/* Login Page Styling */
+.login-container {
+  background: var(--primary-color);
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--footer-text);
+}
+
+.login-container label {
+  display: block;
+  margin: 12px 0 6px;
+  font-weight: 600;
+  color: var(--footer-text);
+}
+
+.login-container input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--accent-color);
+  border-radius: 10px;
+  margin-bottom: 15px;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+.login-container input:focus {
+  border-color: var(--secondary-color);
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 40px;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  user-select: none;
+}
+
+.login-container button {
+  width: 100%;
+  padding: 12px;
+  background: var(--secondary-color);
+  color: var(--text-color);
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.login-container button:hover {
+  background: var(--accent-color);
+}
+
+.forgot-password {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.forgot-password a {
+  color: var(--footer-text);
+  text-decoration: none;
+}
+
+.forgot-password a:hover {
+  text-decoration: underline;
 }
