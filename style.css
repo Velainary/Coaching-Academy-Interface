@@ -69,23 +69,34 @@ body {
 .navbar {
   background: var(--primary-color);
   color: var(--footer-text);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .navbar a {
   color: var(--footer-text);
+  margin-left: 20px;
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
+
 .navbar a::after {
   content: '';
   position: absolute;
   width: 0%;
   height: 2px;
-  background: hotpink;
+  background: var(--accent-color);
   left: 0;
   bottom: -5px;
   transition: 0.3s;
 }
 .navbar a:hover::after { width: 100%; }
-.navbar a:hover { color: hotpink; }
+.navbar a:hover {
+  color: var(--accent-color);
+}
 
 .highlights {
   margin-top: 10px;
@@ -97,15 +108,21 @@ body {
 }
 
 /* Courses */
-.grade {
-  background-color: #1e1e1e;
-  padding: 20px;
-  margin: 20px 0;
+.course-card {
+  background: var(--secondary-bg);
+  border: 1px solid var(--accent-color);
   border-radius: 12px;
-  box-shadow: 0 0 15px rgba(255, 105, 180, 0.1);
+  padding: 20px;
+  transition: background 0.3s ease, border 0.3s ease, color 0.3s ease;
 }
-h2 { color: hotpink; text-align: center; }
-h3 { color: #ffffff; }
+
+.course-card h3 {
+  color: var(--primary-color);
+}
+
+.course-card p {
+  color: var(--text-color);
+}
 
 /* Cards (Students/Tutors) */
 .cards {
