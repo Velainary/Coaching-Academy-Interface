@@ -1,8 +1,31 @@
+/* Default Light Mode */
+:root {
+  --bg-color: #D8E2DC;
+  --secondary-bg: #FFE5D9;
+  --accent-color: #FFCAD4;
+  --primary-color: #F4ACB7;
+  --text-color: #9D8189;
+  --footer-bg: #F4ACB7;
+  --footer-text: #fff;
+}
+
+/* Dark Mode */
+.dark-mode {
+  --bg-color: #1a1a1a;
+  --secondary-bg: #2a2a2a;
+  --accent-color: #F4ACB7;
+  --primary-color: #FFCAD4;
+  --text-color: #D8E2DC;
+  --footer-bg: #111;
+  --footer-text: #ccc;
+}
+
 body {
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Segoe UI', sans-serif;
   margin: 0;
-  font-family: 'Outfit', sans-serif;
-  background-color: #121212;
-  color: #f0f0f0;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -44,15 +67,12 @@ body {
 .class-name a { font-size: 0.9rem; color: #aaa; text-decoration: underline; }
 
 .navbar {
-  display: flex;
-  gap: 20px;
+  background: var(--primary-color);
+  color: var(--footer-text);
 }
+
 .navbar a {
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  position: relative;
-  transition: color 0.3s ease;
+  color: var(--footer-text);
 }
 .navbar a::after {
   content: '';
@@ -96,24 +116,31 @@ h3 { color: #ffffff; }
   padding-bottom: 10px;
 }
 .card {
-  background-color: #2a2a2a;
-  color: white;
-  border-radius: 10px;
+  background: var(--secondary-bg);
+  border-radius: 12px;
   padding: 20px;
-  min-width: 200px;
-  text-align: center;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.05);
-  flex-shrink: 0;
-  transition: transform 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 .card:hover { transform: translateY(-5px); }
 
+button, .theme-toggle {
+  background: var(--accent-color);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text-color);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+button:hover, .theme-toggle:hover {
+  background: var(--primary-color);
+}
+
 /* Footer */
 .site-footer {
-  background: #1a1a1a;
-  color: #ccc;
-  padding: 50px 20px 20px;
-  margin-top: 40px;
+  background: var(--footer-bg);
+  color: var(--footer-text);
 }
 
 .footer-container {
@@ -122,6 +149,10 @@ h3 { color: #ffffff; }
   gap: 40px;
   max-width: 1200px;
   margin: auto;
+}
+
+.site-footer a:hover {
+  color: var(--accent-color);
 }
 
 .footer-section h3 {
