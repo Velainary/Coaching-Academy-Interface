@@ -146,9 +146,26 @@ body {
   display: flex;
   gap: 15px;
   margin: 20px 0;
-  overflow-x: auto;
-  padding-bottom: 10px;
+  flex-wrap: wrap;   /* allows wrapping to next line if too many */
+  justify-content: flex-start;
 }
+
+/* Student card styling */
+.student-card {
+  background: #ffe5dc;
+  padding: 15px 25px;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+  flex: 0 0 180px;   /* fixed width cards */
+}
+
+.student-card:hover {
+  transform: translateY(-5px);
+}
+
 .card {
   background: var(--secondary-bg);
   border-radius: 12px;
