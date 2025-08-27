@@ -8,18 +8,6 @@
   --footer-bg: #F4ACB7;
   --footer-text: #000000;
 }
-
-/* Dark Mode */
-.dark-mode {
-  --bg-color: #1a1a1a;
-  --secondary-bg: #2a2a2a;
-  --accent-color: #F4ACB7;
-  --primary-color: #FFCAD4;
-  --text-color: #ffffff;
-  --footer-bg: #111;
-  --footer-text: #ffffff;
-}
-
 body {
   background: var(--bg-color);
   color: var(--text-color);
@@ -173,20 +161,6 @@ body {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 .card:hover { transform: translateY(-5px); }
-
-button, .theme-toggle {
-  background: var(--accent-color);
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  color: var(--text-color);
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
-button:hover, .theme-toggle:hover {
-  background: var(--primary-color);
-}
 
 /* Footer */
 .site-footer {
