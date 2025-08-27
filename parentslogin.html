@@ -4,29 +4,94 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Parent Login</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ===== CSS Styling ===== */
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+      width: 320px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+
+    p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      text-align: left;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .forgot-password {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .password-wrapper {
+      display: flex;
+      align-items: center;
+    }
+
+    .password-wrapper input {
+      flex: 1;
+    }
+
+    .eye-icon {
+      margin-left: -30px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <!-- Navbar (reuse from main site) -->
-  <nav class="navbar">
-    <div class="logo">EduPortal</div>
-    <div class="navbar-links">
-      <a href="index.html">Home</a>
-      <a href="courses.html">Courses</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-    </div>
-    <button id="theme-toggle" class="theme-toggle">🌙 Dark Mode</button>
-  </nav>
-
-  <!-- Header -->
-  <header class="header">
-    <h1>Parent Login</h1>
-    <p>Access your child’s progress and stay connected with learning.</p>
-  </header>
-
-  <!-- Login Form -->
+  <!-- ===== Login Box ===== -->
   <div class="login-container">
+    <h1>Parent Login</h1>
+    <p>Access your child’s progress and stay connected.</p>
+
     <form action="parent-dashboard.html" method="post">
       <label for="parent-username">Username</label>
       <input type="text" id="parent-username" name="username" required />
@@ -45,36 +110,8 @@
     </form>
   </div>
 
-  <!-- Footer (reuse from main site) -->
-  <footer class="footer">
-    <div class="footer-container">
-      <div class="footer-section">
-        <h3>EduPortal</h3>
-        <p>Empowering learning through technology.</p>
-      </div>
-      <div class="footer-section">
-        <h4>Quick Links</h4>
-        <ul>
-          <li><a href="Main.html">Home</a></li>
-          <li><a href="courses.html">Courses</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </div>
-      <div class="footer-section">
-        <h4>Contact</h4>
-        <p>Email: support@eduportal.com</p>
-        <p>Phone: +91 12345 67890</p>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2025 EduPortal. All Rights Reserved.</p>
-    </div>
-  </footer>
-
-  <!-- Scripts -->
   <script>
-    // Password toggle
+    // ===== JS Script =====
     function togglePasswordVisibility(inputId, icon) {
       const passwordInput = document.getElementById(inputId);
       if (passwordInput.type === "password") {
@@ -85,14 +122,6 @@
         icon.textContent = "👁️";
       }
     }
-
-    // Dark/Light mode toggle
-    const toggleBtn = document.getElementById("theme-toggle");
-    toggleBtn.addEventListener("click", () => {
-      document.body.classList.toggle("dark-mode");
-      toggleBtn.textContent = 
-        document.body.classList.contains("dark-mode") ? "☀️ Light Mode" : "🌙 Dark Mode";
-    });
   </script>
 </body>
 </html>
