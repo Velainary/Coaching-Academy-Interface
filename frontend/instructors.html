@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -23,9 +23,11 @@
 
     <section class="card">
       <label>Name</label>
-      <input id="instr-name" type="text">
+      <input id="instr-name" type="text" placeholder="Full name">
       <label>Subject</label>
-      <input id="instr-subject" type="text">
+      <input id="instr-subject" type="text" placeholder="Subject taught">
+      <label>Bio</label>
+      <input id="instr-bio" type="text" placeholder="Short bio">
       <button id="add-instr" class="btn">Add Instructor</button>
     </section>
 
@@ -33,7 +35,6 @@
   </main>
 
   <footer>© 2025 EduConnect</footer>
-  <script src="app.js"></script>
   <script>
     async function loadInstructors(){
       const res = await fetch('/api/instructors');
@@ -43,25 +44,34 @@
       data.forEach(i=>{
         const el = document.createElement('div');
         el.className = 'instructor-card';
-        el.innerHTML = `<h4>${i.name}</h4><p>${i.subject}</p>`;
+        el.innerHTML = `<h4>${escapeHtml(i.name)}</h4><p><strong>${escapeHtml(i.subject || '')}</strong></p><p>${escapeHtml(i.bio || '')}</p>`;
         container.appendChild(el);
       });
     }
 
     document.getElementById('add-instr').addEventListener('click', async ()=>{
-      const name = document.getElementById('instr-name').value;
-      const subject = document.getElementById('instr-subject').value;
-      try{
+      const name = document.getElementById('instr-name').value.trim();
+      const subject = document.getElementById('instr-subject').value.trim();
+      const bio = document.getElementById('instr-bio').value.trim();
+      if (!name) return alert('Name required');
+      try {
         const res = await fetch('/api/instructors', {
           method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ name, subject })
+          body: JSON.stringify({ name, subject, bio })
         });
         if(!res.ok) throw await res.json();
         document.getElementById('instr-name').value = '';
         document.getElementById('instr-subject').value = '';
+        document.getElementById('instr-bio').value = '';
         loadInstructors();
-      }catch(e){ alert('Add instructor failed: '+(e.error||e.message||JSON.stringify(e))); }
+      } catch(e) {
+        alert('Add instructor failed: '+(e.error||e.message||JSON.stringify(e)));
+      }
     });
+
+    function escapeHtml(s = '') {
+      return s.replace(/[&<>"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+    }
 
     loadInstructors();
   </script>

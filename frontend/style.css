@@ -1,26 +1,85 @@
+/* frontend/style.css */
 :root{
-  --primary:#0a2a66;
-  --muted:#f4f6fb;
-  --card:#ffffff;
+  --primary: #0a2a66;
+  --accent: #1f6feb;
+  --muted: #f4f6fb;
+  --card: #ffffff;
+  --text: #222834;
 }
 
 *{box-sizing:border-box}
-body{font-family:Inter,system-ui,Arial,sans-serif;background:var(--muted);margin:0;color:#222}
-.nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;background:var(--primary);color:#fff}
-.nav .brand{font-weight:700}
-.nav a{color:#fff;margin-left:1rem;text-decoration:none}
-.nav a.active{text-decoration:underline}
-.container{max-width:980px;margin:2rem auto;padding:0 1rem}
-.hero{padding:2rem;background:linear-gradient(90deg,#eaf0ff, #fff);border-radius:10px;text-align:center}
-.cta .btn{margin-right:0.5rem}
-.btn{background:var(--primary);color:#fff;padding:.6rem 1rem;border-radius:8px;border:none;cursor:pointer}
-.btn.ghost{background:transparent;border:2px solid rgba(255,255,255,0.15)}
-.quick{display:flex;gap:1rem;justify-content:space-around;margin-top:1rem}
-.card{background:var(--card);padding:1rem;border-radius:8px;box-shadow:0 6px 18px rgba(10,42,102,0.06)}
-.narrow{max-width:640px;margin:2rem auto}
-input,select{width:100%;padding:.5rem;margin:.4rem 0 1rem;border-radius:6px;border:1px solid #ddd}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1rem}
-.course-card, .instructor-card{background:#fff;padding:1rem;border-radius:8px;box-shadow:0 6px 14px rgba(10,42,102,0.04)}
-.table-wrap table{width:100%;border-collapse:collapse}
-.table-wrap th, .table-wrap td{border:1px solid #eee;padding:.6rem;text-align:left}
-footer{text-align:center;padding:1rem;margin-top:2rem;color:#777}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background:var(--muted);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.45;
+}
+
+/* NAV */
+.nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 20px;
+  background:linear-gradient(90deg,var(--primary), #08305b);
+  color:white;
+  box-shadow:0 4px 14px rgba(10,42,102,0.08);
+}
+.nav .brand{font-weight:700;font-size:1.1rem}
+.nav nav a{color:rgba(255,255,255,0.95);margin-left:14px;text-decoration:none;padding:6px 8px;border-radius:6px}
+.nav nav a.active, .nav nav a:hover{background:rgba(255,255,255,0.06);text-decoration:none}
+
+/* Container */
+.container{max-width:1100px;margin:26px auto;padding:0 18px}
+
+/* Hero / cards */
+.hero{
+  background:linear-gradient(180deg,#eaf0ff, #ffffff);
+  padding:28px;border-radius:12px;margin-bottom:18px;
+  box-shadow:0 8px 30px rgba(10,42,102,0.04);
+  text-align:center;
+}
+.hero h1{margin:0 0 8px;font-size:1.6rem;color:var(--primary)}
+.hero p{margin:0 0 12px;color:#3b4860}
+
+/* layout */
+.card{
+  background:var(--card);
+  padding:16px;border-radius:10px;
+  box-shadow:0 6px 18px rgba(10,42,102,0.04);
+  margin-bottom:18px;
+}
+
+/* grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:14px}
+
+/* cards */
+.course-card, .instructor-card{
+  padding:14px;border-radius:10px;background:#fff;border:1px solid #f0f2f8;
+  transition:transform .12s ease,box-shadow .12s ease;
+}
+.course-card:hover, .instructor-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(16,24,40,0.06)}
+
+/* forms */
+label{display:block;font-size:.86rem;margin-bottom:6px;color:#4b5563}
+input[type="text"], input[type="email"], input[type="password"], select, input[type="date"]{
+  width:100%;padding:10px;border-radius:8px;border:1px solid #e6e9f0;margin-bottom:10px;font-size:0.95rem;
+  background:#fff;
+}
+.btn{
+  display:inline-block;padding:10px 14px;border-radius:10px;background:var(--primary);color:#fff;border:none;cursor:pointer;font-weight:600;
+}
+.btn[disabled]{opacity:0.6;cursor:not-allowed}
+
+/* table */
+.table-wrap table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #edf0f6;border-radius:8px;overflow:hidden}
+.table-wrap th, .table-wrap td{padding:10px;border-bottom:1px solid #f5f7fb;text-align:left;font-size:0.95rem}
+.table-wrap th{background:#fbfcff;color:#334155}
+
+/* small helpers */
+.narrow{max-width:700px;margin:0 auto}
+footer{text-align:center;padding:20px;color:#667085;font-size:.9rem;margin-top:26px}

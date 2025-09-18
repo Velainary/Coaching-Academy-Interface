@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -23,10 +23,10 @@
 
     <section class="card">
       <h3>Add Course</h3>
-      <label>Title</label>
-      <input id="course-title" type="text">
-      <label>Schedule / Description</label>
-      <input id="course-desc" type="text">
+      <label>Subject</label>
+      <input id="course-subject" type="text" placeholder="e.g. Mathematics">
+      <label>Schedule</label>
+      <input id="course-schedule" type="text" placeholder="e.g. Mon-Wed-Fri 5:00-6:30 PM">
       <button id="add-course" class="btn">Add Course</button>
     </section>
 
@@ -34,7 +34,6 @@
   </main>
 
   <footer>© 2025 EduConnect</footer>
-  <script src="app.js"></script>
   <script>
     async function loadCourses(){
       const res = await fetch('/api/courses');
@@ -44,25 +43,35 @@
       data.forEach(c=>{
         const el = document.createElement('div');
         el.className = 'course-card';
-        el.innerHTML = `<h4>${c.title || c.subject}</h4><p>${c.description || c.schedule || ''}</p>`;
+        el.innerHTML = `<h4>${escapeHtml(c.subject)}</h4><p>${escapeHtml(c.schedule || '')}</p>`;
         container.appendChild(el);
       });
     }
 
     document.getElementById('add-course').addEventListener('click', async ()=>{
-      const title = document.getElementById('course-title').value;
-      const description = document.getElementById('course-desc').value;
-      try{
+      const subject = document.getElementById('course-subject').value.trim();
+      const schedule = document.getElementById('course-schedule').value.trim();
+      if (!subject) return alert('Subject required');
+      try {
         const res = await fetch('/api/courses', {
           method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ title, description })
+          body: JSON.stringify({ subject, schedule })
         });
-        if(!res.ok) throw await res.json();
-        document.getElementById('course-title').value = '';
-        document.getElementById('course-desc').value = '';
+        if(!res.ok) {
+          const err = await res.json();
+          throw err;
+        }
+        document.getElementById('course-subject').value = '';
+        document.getElementById('course-schedule').value = '';
         loadCourses();
-      }catch(e){ alert('Add course failed: '+(e.error||e.message||JSON.stringify(e))); }
+      } catch(e) {
+        alert('Add course failed: '+(e.error||e.message||JSON.stringify(e)));
+      }
     });
+
+    function escapeHtml(s = '') {
+      return s.replace(/[&<>"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+    }
 
     loadCourses();
   </script>
