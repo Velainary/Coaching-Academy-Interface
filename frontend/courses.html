@@ -1,42 +1,70 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Courses - EduConnect</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Courses</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">EduConnect</div>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="courses.html" class="active">Courses</a></li>
-        <li><a href="instructors.html">Instructors</a></li>
-        <li><a href="attendance.html">Attendance</a></li>
-        <li><a href="login.html">Login</a></li>
-      </ul>
+  <header class="nav">
+    <div class="brand">EduConnect</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="courses.html" class="active">Courses</a>
+      <a href="instructors.html">Instructors</a>
+      <a href="attendance.html">Attendance</a>
+      <a href="login.html">Login</a>
     </nav>
   </header>
 
-  <section class="page-header">
-    <h1>Our Courses</h1>
-  </section>
+  <main class="container">
+    <h2>Courses</h2>
 
-  <section class="course-list">
-    <div class="course">
-      <h3>Mathematics</h3>
-      <p>Time: Mon-Wed-Fri, 5:00 - 6:30 PM</p>
-    </div>
-    <div class="course">
-      <h3>Science</h3>
-      <p>Time: Tue-Thu, 6:00 - 7:30 PM</p>
-    </div>
-    <div class="course">
-      <h3>English</h3>
-      <p>Time: Sat-Sun, 10:00 - 11:30 AM</p>
-    </div>
-  </section>
+    <section class="card">
+      <h3>Add Course</h3>
+      <label>Title</label>
+      <input id="course-title" type="text">
+      <label>Schedule / Description</label>
+      <input id="course-desc" type="text">
+      <button id="add-course" class="btn">Add Course</button>
+    </section>
+
+    <section id="course-list" class="grid"></section>
+  </main>
+
+  <footer>© 2025 EduConnect</footer>
+  <script src="app.js"></script>
+  <script>
+    async function loadCourses(){
+      const res = await fetch('/api/courses');
+      const data = res.ok ? await res.json() : [];
+      const container = document.getElementById('course-list');
+      container.innerHTML = '';
+      data.forEach(c=>{
+        const el = document.createElement('div');
+        el.className = 'course-card';
+        el.innerHTML = `<h4>${c.title || c.subject}</h4><p>${c.description || c.schedule || ''}</p>`;
+        container.appendChild(el);
+      });
+    }
+
+    document.getElementById('add-course').addEventListener('click', async ()=>{
+      const title = document.getElementById('course-title').value;
+      const description = document.getElementById('course-desc').value;
+      try{
+        const res = await fetch('/api/courses', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ title, description })
+        });
+        if(!res.ok) throw await res.json();
+        document.getElementById('course-title').value = '';
+        document.getElementById('course-desc').value = '';
+        loadCourses();
+      }catch(e){ alert('Add course failed: '+(e.error||e.message||JSON.stringify(e))); }
+    });
+
+    loadCourses();
+  </script>
 </body>
 </html>

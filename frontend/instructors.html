@@ -1,40 +1,69 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Instructors - EduConnect</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Instructors</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">EduConnect</div>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="courses.html">Courses</a></li>
-        <li><a href="instructors.html" class="active">Instructors</a></li>
-        <li><a href="attendance.html">Attendance</a></li>
-        <li><a href="login.html">Login</a></li>
-      </ul>
+  <header class="nav">
+    <div class="brand">EduConnect</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="courses.html">Courses</a>
+      <a href="instructors.html" class="active">Instructors</a>
+      <a href="attendance.html">Attendance</a>
+      <a href="login.html">Login</a>
     </nav>
   </header>
 
-  <section class="page-header">
-    <h1>Meet Our Instructors</h1>
-  </section>
+  <main class="container">
+    <h2>Instructors</h2>
 
-  <section class="instructors">
-    <div class="instructor">
-      <img src="images/teacher.jpg" alt="Teacher 1">
-      <h3>Mr. John Doe</h3>
-      <p>Math Instructor with 10+ years experience.</p>
-    </div>
-    <div class="instructor">
-      <img src="images/teacher2.jpg" alt="Teacher 2">
-      <h3>Ms. Jane Smith</h3>
-      <p>Science Specialist, passionate about learning.</p>
-    </div>
-  </section>
+    <section class="card">
+      <label>Name</label>
+      <input id="instr-name" type="text">
+      <label>Subject</label>
+      <input id="instr-subject" type="text">
+      <button id="add-instr" class="btn">Add Instructor</button>
+    </section>
+
+    <section id="instr-list" class="grid"></section>
+  </main>
+
+  <footer>© 2025 EduConnect</footer>
+  <script src="app.js"></script>
+  <script>
+    async function loadInstructors(){
+      const res = await fetch('/api/instructors');
+      const data = res.ok ? await res.json() : [];
+      const container = document.getElementById('instr-list');
+      container.innerHTML = '';
+      data.forEach(i=>{
+        const el = document.createElement('div');
+        el.className = 'instructor-card';
+        el.innerHTML = `<h4>${i.name}</h4><p>${i.subject}</p>`;
+        container.appendChild(el);
+      });
+    }
+
+    document.getElementById('add-instr').addEventListener('click', async ()=>{
+      const name = document.getElementById('instr-name').value;
+      const subject = document.getElementById('instr-subject').value;
+      try{
+        const res = await fetch('/api/instructors', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ name, subject })
+        });
+        if(!res.ok) throw await res.json();
+        document.getElementById('instr-name').value = '';
+        document.getElementById('instr-subject').value = '';
+        loadInstructors();
+      }catch(e){ alert('Add instructor failed: '+(e.error||e.message||JSON.stringify(e))); }
+    });
+
+    loadInstructors();
+  </script>
 </body>
 </html>

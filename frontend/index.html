@@ -1,65 +1,72 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>EduConnect - Home</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Navigation -->
-  <header>
-    <nav class="navbar">
-      <div class="logo">EduConnect</div>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="courses.html">Courses</a></li>
-        <li><a href="instructors.html">Instructors</a></li>
-        <li><a href="attendance.html">Attendance</a></li>
-        <li><a href="login.html">Login</a></li>
-      </ul>
+  <header class="nav">
+    <div class="brand">EduConnect</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="courses.html">Courses</a>
+      <a href="instructors.html">Instructors</a>
+      <a href="attendance.html">Attendance</a>
+      <a href="login.html" id="nav-login">Login</a>
     </nav>
   </header>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <h1>Excellence in <span class="highlight">Education</span></h1>
-    <p>Helping students achieve academic goals with expert instructors and personalized learning.</p>
-    <div class="buttons">
-      <a href="courses.html" class="btn">Get Started</a>
-      <a href="instructors.html" class="btn secondary">Learn More</a>
-    </div>
-  </section>
-
-  <!-- Stats -->
-  <section class="stats">
-    <div class="stat"><h2>500+</h2><p>Students</p></div>
-    <div class="stat"><h2>25+</h2><p>Courses</p></div>
-    <div class="stat"><h2>100+</h2><p>Classes</p></div>
-    <div class="stat"><h2>95%</h2><p>Success Rate</p></div>
-  </section>
-
-  <!-- Features -->
-  <section class="features">
-    <h2>Why Choose EduConnect?</h2>
-    <div class="feature-grid">
-      <div class="feature">
-        <h3>Expert Teaching</h3>
-        <p>Learn from qualified instructors with years of experience.</p>
+  <main class="container">
+    <section class="hero">
+      <h1>Tuition, made simple.</h1>
+      <p>Classes, schedules, attendance — all in one place.</p>
+      <div class="cta">
+        <a class="btn" href="courses.html">View Courses</a>
+        <a class="btn ghost" href="login.html">Login / Register</a>
       </div>
-      <div class="feature">
-        <h3>Small Class Sizes</h3>
-        <p>Personalized attention so every student gets support.</p>
-      </div>
-      <div class="feature">
-        <h3>Flexible Scheduling</h3>
-        <p>Choose time slots that work best for your lifestyle.</p>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <footer>
-    <p>© 2025 EduConnect. All rights reserved.</p>
-  </footer>
+    <section class="quick">
+      <div>
+        <h3 id="stat-students">—</h3>
+        <p>Students</p>
+      </div>
+      <div>
+        <h3 id="stat-courses">—</h3>
+        <p>Courses</p>
+      </div>
+      <div>
+        <h3 id="stat-instructors">—</h3>
+        <p>Instructors</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>© 2025 EduConnect</footer>
+
+  <script src="app.js"></script>
+  <script>
+    // Load simple stats
+    (async function() {
+      try {
+        const [usersRes, coursesRes, instrRes] = await Promise.all([
+          fetch('/api/auth/users'),
+          fetch('/api/courses'),
+          fetch('/api/instructors')
+        ]);
+        const users = usersRes.ok ? await usersRes.json() : [];
+        const courses = coursesRes.ok ? await coursesRes.json() : [];
+        const instr = instrRes.ok ? await instrRes.json() : [];
+
+        document.getElementById('stat-students').innerText = users.length;
+        document.getElementById('stat-courses').innerText = courses.length;
+        document.getElementById('stat-instructors').innerText = instr.length;
+      } catch (e) {
+        console.warn('Stats load failed', e);
+      }
+    })();
+  </script>
 </body>
 </html>

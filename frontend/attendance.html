@@ -1,47 +1,98 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Attendance - EduConnect</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Attendance</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">EduConnect</div>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="courses.html">Courses</a></li>
-        <li><a href="instructors.html">Instructors</a></li>
-        <li><a href="attendance.html" class="active">Attendance</a></li>
-        <li><a href="login.html">Login</a></li>
-      </ul>
+  <header class="nav">
+    <div class="brand">EduConnect</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="courses.html">Courses</a>
+      <a href="instructors.html">Instructors</a>
+      <a href="attendance.html" class="active">Attendance</a>
+      <a href="login.html">Login</a>
     </nav>
   </header>
 
-  <section class="page-header">
-    <h1>Attendance Sheet</h1>
-  </section>
+  <main class="container">
+    <h2>Attendance Sheet</h2>
 
-  <section class="attendance-table">
-    <table>
-      <tr>
-        <th>Name</th>
-        <th>Date</th>
-        <th>Status</th>
-      </tr>
-      <tr>
-        <td>John Smith</td>
-        <td>18/09/2025</td>
-        <td>Present</td>
-      </tr>
-      <tr>
-        <td>Jane Doe</td>
-        <td>18/09/2025</td>
-        <td>Absent</td>
-      </tr>
-    </table>
-  </section>
+    <section class="card">
+      <label>Student</label>
+      <select id="student-select"></select>
+
+      <label>Course</label>
+      <select id="course-select"></select>
+
+      <label>Date</label>
+      <input id="att-date" type="date" value="">
+
+      <label>Status</label>
+      <select id="att-status">
+        <option value="Present">Present</option>
+        <option value="Absent">Absent</option>
+      </select>
+
+      <button id="mark-att" class="btn">Mark Attendance</button>
+    </section>
+
+    <section id="att-list" class="table-wrap"></section>
+  </main>
+
+  <footer>© 2025 EduConnect</footer>
+  <script src="app.js"></script>
+  <script>
+    async function loadStudentsAndCourses(){
+      const [uRes, cRes] = await Promise.all([fetch('/api/auth/users'), fetch('/api/courses')]);
+      const users = uRes.ok ? await uRes.json() : [];
+      const courses = cRes.ok ? await cRes.json() : [];
+
+      const studentSelect = document.getElementById('student-select');
+      studentSelect.innerHTML = '';
+      users.forEach(u => {
+        studentSelect.innerHTML += `<option value="${u.id}">${u.name} (${u.role})</option>`;
+      });
+
+      const courseSelect = document.getElementById('course-select');
+      courseSelect.innerHTML = '';
+      courses.forEach(c => courseSelect.innerHTML += `<option value="${c.id}">${c.title || c.subject}</option>`);
+    }
+
+    async function loadAttendance(){
+      const res = await fetch('/api/attendance');
+      const data = res.ok ? await res.json() : [];
+      const wrap = document.getElementById('att-list');
+      wrap.innerHTML = `<table><thead><tr><th>Student</th><th>Course</th><th>Date</th><th>Status</th></tr></thead><tbody>${
+        data.map(r => `<tr><td>${r.student}</td><td>${r.course}</td><td>${r.date}</td><td>${r.status}</td></tr>`).join('')
+      }</tbody></table>`;
+    }
+
+    document.getElementById('mark-att').addEventListener('click', async ()=>{
+      const user_id = document.getElementById('student-select').value;
+      const course_id = document.getElementById('course-select').value;
+      const date = document.getElementById('att-date').value || new Date().toISOString().slice(0,10);
+      const status = document.getElementById('att-status').value;
+      try{
+        const res = await fetch('/api/attendance', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ user_id, course_id, date, status })
+        });
+        if(!res.ok) throw await res.json();
+        loadAttendance();
+      }catch(e){ alert('Mark failed: '+(e.error||e.message||JSON.stringify(e))); }
+    });
+
+    // init
+    (function init(){
+      // set default date to today
+      document.getElementById('att-date').value = new Date().toISOString().slice(0,10);
+      loadStudentsAndCourses();
+      loadAttendance();
+    })();
+  </script>
 </body>
 </html>
