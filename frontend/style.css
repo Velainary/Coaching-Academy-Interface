@@ -1,0 +1,168 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f9f9fb;
+  color: #333;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background: #0a2a66;
+  color: #fff;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-links li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.nav-links li a.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: #eaf0ff;
+}
+
+.hero h1 .highlight {
+  color: #0a2a66;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  margin: 0.5rem;
+  background: #0a2a66;
+  color: #fff;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.btn.secondary {
+  background: #555;
+}
+
+/* Stats */
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.stat h2 {
+  color: #0a2a66;
+}
+
+/* Features */
+.features {
+  padding: 2rem;
+  text-align: center;
+}
+
+.feature-grid {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.feature {
+  width: 250px;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Course List */
+.course-list {
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.course {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 10px;
+  text-align: center;
+}
+
+/* Instructors */
+.instructors {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.instructor img {
+  width: 150px;
+  border-radius: 50%;
+}
+
+/* Login */
+.login-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 10px;
+}
+
+.login-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.login-container input,
+.login-container select {
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Attendance */
+.attendance-table {
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.attendance-table table {
+  border-collapse: collapse;
+  width: 80%;
+  background: #fff;
+}
+
+.attendance-table th, .attendance-table td {
+  border: 1px solid #ddd;
+  padding: 0.8rem;
+  text-align: center;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 1rem;
+  background: #0a2a66;
+  color: #fff;
+  margin-top: 2rem;
+}
