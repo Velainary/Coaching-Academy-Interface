@@ -1,10 +1,11 @@
-// auth.js - universal auth & role handling
+// auth.js - load this in every HTML page AFTER app.js
 
 // ===== SESSION HANDLING =====
 function getCurrentUser() {
+  const raw = localStorage.getItem('edu_user');
+  if (!raw) return null;
   try {
-    const raw = localStorage.getItem('edu_user');
-    return raw ? JSON.parse(raw) : null;
+    return JSON.parse(raw);
   } catch {
     return null;
   }
@@ -14,30 +15,11 @@ function getToken() {
   return localStorage.getItem('edu_token') || null;
 }
 
-function setSession(user, token) {
-  if (user) {
-    localStorage.setItem('edu_user', JSON.stringify(user));
-  } else {
-    localStorage.removeItem('edu_user');
-  }
-  if (token) {
-    localStorage.setItem('edu_token', token);
-  } else {
-    localStorage.removeItem('edu_token');
-  }
-}
-
-function clearSession() {
-  localStorage.removeItem('edu_user');
-  localStorage.removeItem('edu_token');
-}
-
 // ===== AUTH PROTECT =====
 function requireLogin() {
   const user = getCurrentUser();
   if (!user) {
     window.location = 'login.html';
-    return null;
   }
   return user;
 }
@@ -45,36 +27,21 @@ function requireLogin() {
 // ===== ROLE HANDLING =====
 function isTeacher() {
   const user = getCurrentUser();
-  return user?.role === 'teacher';
+  return user && user.role === 'teacher';
 }
 
-function isParent() {
-  const user = getCurrentUser();
-  return user?.role === 'parent';
-}
-
-function isStudent() {
-  const user = getCurrentUser();
-  return user?.role === 'student';
-}
-
-// Hide/show elements marked for role restriction
+// Hide/show admin sections
 function applyRoleVisibility() {
   const user = getCurrentUser();
+  if (!user) return;
 
-  // Teacher-only elements
+  // Elements only teachers should see
   document.querySelectorAll('.admin-only').forEach(el => {
-    el.style.display = isTeacher() ? '' : 'none';
-  });
-
-  // Parent-only elements
-  document.querySelectorAll('.parent-only').forEach(el => {
-    el.style.display = isParent() ? '' : 'none';
-  });
-
-  // Student-only elements
-  document.querySelectorAll('.student-only').forEach(el => {
-    el.style.display = isStudent() ? '' : 'none';
+    if (!isTeacher()) {
+      el.style.display = 'none';  // hide from students/parents
+    } else {
+      el.style.display = '';      // visible for teachers
+    }
   });
 }
 
@@ -88,35 +55,15 @@ async function authFetch(url, options = {}) {
   const res = await fetch(url, options);
   if (res.status === 401) {
     alert('Session expired, please login again.');
-    clearSession();
+    localStorage.removeItem('edu_user');
+    localStorage.removeItem('edu_token');
     window.location = 'login.html';
-    return null;
+    return;
   }
   return res;
 }
 
-// ===== NAV UPDATE =====
-function updateNav() {
-  const user = getCurrentUser();
-  const loginLink = document.querySelector('nav a[href="login.html"]');
-
-  if (!loginLink) return;
-
-  if (user) {
-    loginLink.textContent = `Logout (${user.role})`;
-    loginLink.onclick = (e) => {
-      e.preventDefault();
-      clearSession();
-      window.location = 'login.html';
-    };
-  } else {
-    loginLink.textContent = 'Login';
-    loginLink.onclick = null;
-  }
-}
-
-// ===== INIT =====
+// Run on page load
 document.addEventListener('DOMContentLoaded', () => {
   applyRoleVisibility();
-  updateNav();
 });
