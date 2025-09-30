@@ -1,46 +1,69 @@
-// backend/routes/auth.js
-const express = require("express");
-const db = require("../database");
-const router = express.Router();
+// auth.js - load this in every HTML page AFTER app.js
 
-// Get all users (useful to pick student for attendance)
-router.get("/users", (req, res) => {
-  db.all("SELECT id, name, email, role FROM users", [], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows);
+// ===== SESSION HANDLING =====
+function getCurrentUser() {
+  const raw = localStorage.getItem('edu_user');
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function getToken() {
+  return localStorage.getItem('edu_token') || null;
+}
+
+// ===== AUTH PROTECT =====
+function requireLogin() {
+  const user = getCurrentUser();
+  if (!user) {
+    window.location = 'login.html';
+  }
+  return user;
+}
+
+// ===== ROLE HANDLING =====
+function isTeacher() {
+  const user = getCurrentUser();
+  return user && user.role === 'teacher';
+}
+
+// Hide/show admin sections
+function applyRoleVisibility() {
+  const user = getCurrentUser();
+  if (!user) return;
+
+  // Elements only teachers should see
+  document.querySelectorAll('.admin-only').forEach(el => {
+    if (!isTeacher()) {
+      el.style.display = 'none';  // hide from students/parents
+    } else {
+      el.style.display = '';      // visible for teachers
+    }
   });
-});
+}
 
-// Login
-router.post("/login", (req, res) => {
-  const { email, password } = req.body;
-  db.get(
-    "SELECT id, name, email, role FROM users WHERE email = ? AND password = ?",
-    [email, password],
-    (err, row) => {
-      if (err) return res.status(500).json({ error: err.message });
-      if (!row) return res.status(401).json({ message: "Invalid credentials" });
-      res.json({ message: "Login successful", user: row });
-    }
-  );
-});
+// ===== FETCH WRAPPER =====
+async function authFetch(url, options = {}) {
+  const token = getToken();
+  const headers = options.headers || {};
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  options.headers = headers;
 
-// Register
-router.post("/register", (req, res) => {
-  const { name, email, password, role } = req.body;
-  db.run(
-    "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
-    [name, email, password, role || "student"],
-    function (err) {
-      if (err) {
-        if (err.message && err.message.includes("UNIQUE")) {
-          return res.status(400).json({ error: "Email already registered" });
-        }
-        return res.status(500).json({ error: err.message });
-      }
-      res.json({ message: "User registered", userId: this.lastID });
-    }
-  );
-});
+  const res = await fetch(url, options);
+  if (res.status === 401) {
+    alert('Session expired, please login again.');
+    localStorage.removeItem('edu_user');
+    localStorage.removeItem('edu_token');
+    window.location = 'login.html';
+    return;
+  }
+  return res;
+}
 
-module.exports = router;
+// Run on page load
+document.addEventListener('DOMContentLoaded', () => {
+  applyRoleVisibility();
+});

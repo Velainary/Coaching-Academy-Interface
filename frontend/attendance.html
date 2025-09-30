@@ -21,7 +21,8 @@
   <main class="container">
     <h2>Attendance Sheet</h2>
 
-    <section class="card">
+    <!-- ADMIN-ONLY FORM -->
+    <section class="card admin-only" style="display:none;">
       <label>Student</label>
       <select id="student-select"></select>
 
@@ -44,7 +45,7 @@
   </main>
 
   <footer>© 2025 EduConnect</footer>
-  <script src="app.js"></script>
+  <script src="auth.js"></script>
   <script>
     async function loadStudentsAndCourses(){
       const [uRes, cRes] = await Promise.all([fetch('/api/auth/users'), fetch('/api/courses')]);
@@ -86,12 +87,13 @@
       }catch(e){ alert('Mark failed: '+(e.error||e.message||JSON.stringify(e))); }
     });
 
-    // init
+    // === INIT ===
     (function init(){
       // set default date to today
       document.getElementById('att-date').value = new Date().toISOString().slice(0,10);
       loadStudentsAndCourses();
       loadAttendance();
+      enforceRoleAccess(); // from auth.js
     })();
   </script>
 </body>

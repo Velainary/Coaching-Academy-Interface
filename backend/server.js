@@ -1,12 +1,12 @@
+// backend/server.js
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const path = require("path");
 
-// Import API routes
-const authRoutes = require("./routes/auth");
-const courseRoutes = require("./routes/courses");
-const instructorRoutes = require("./routes/instructors");
+const { router: authRoutes, authenticate, authorizeRole } = require("./routes/auth");
+const coursesRoutes = require("./routes/courses");
+const instructorsRoutes = require("./routes/instructors");
 const attendanceRoutes = require("./routes/attendance");
 
 const app = express();
@@ -14,35 +14,37 @@ const PORT = 5000;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, "../frontend")));
 
-// ======================
-// ✅ Serve Frontend
-// ======================
-app.use(express.static(path.join(__dirname, "../frontend"))); 
+// ---------- API Routes ----------
 
-// Root route -> index.html
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend", "index.html"));
-});
-
-// ======================
-// ✅ API Routes
-// ======================
+// Auth (open)
 app.use("/api/auth", authRoutes);
-app.use("/api/courses", courseRoutes);
-app.use("/api/instructors", instructorRoutes);
-app.use("/api/attendance", attendanceRoutes);
 
-// ======================
-// ✅ Fallback (for unknown routes)
-// ======================
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend", "index.html"));
-});
+// Courses: students/parents can read, only teachers can add
+app.use("/api/courses",
+  authenticate,
+  (req, res, next) => req.method === "GET" ? next() : authorizeRole("teacher")(req, res, next),
+  coursesRoutes
+);
 
-// ======================
-// ✅ Start server
-// ======================
+// Instructors: same logic
+app.use("/api/instructors",
+  authenticate,
+  (req, res, next) => req.method === "GET" ? next() : authorizeRole("teacher")(req, res, next),
+  instructorsRoutes
+);
+
+// Attendance: teachers can add, students/parents can only read
+app.use("/api/attendance",
+  authenticate,
+  (req, res, next) => req.method === "GET" ? next() : authorizeRole("teacher")(req, res, next),
+  attendanceRoutes
+);
+
+// ---------- Frontend ----------
+// (already serving static frontend folder)
+
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });

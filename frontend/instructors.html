@@ -21,7 +21,8 @@
   <main class="container">
     <h2>Instructors</h2>
 
-    <section class="card">
+    <!-- ADMIN-ONLY FORM -->
+    <section class="card admin-only" style="display:none;">
       <label>Name</label>
       <input id="instr-name" type="text" placeholder="Full name">
       <label>Subject</label>
@@ -35,6 +36,7 @@
   </main>
 
   <footer>© 2025 EduConnect</footer>
+  <script src="auth.js"></script> <!-- universal script for login/role -->
   <script>
     async function loadInstructors(){
       const res = await fetch('/api/instructors');
@@ -73,7 +75,9 @@
       return s.replace(/[&<>"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
     }
 
+    // === INIT ===
     loadInstructors();
+    enforceRoleAccess(); // this comes from auth.js
   </script>
 </body>
 </html>

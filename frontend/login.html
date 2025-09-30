@@ -50,7 +50,7 @@
   <footer>© 2025 EduConnect</footer>
   <script src="app.js"></script>
   <script>
-    // register
+    // ---------- REGISTER ----------
     document.getElementById('btn-register').addEventListener('click', async () => {
       const name = document.getElementById('reg-name').value;
       const email = document.getElementById('reg-email').value;
@@ -71,7 +71,7 @@
       }
     });
 
-    // login
+    // ---------- LOGIN ----------
     document.getElementById('btn-login').addEventListener('click', async () => {
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
@@ -83,11 +83,19 @@
         });
         const data = await res.json();
         if (!res.ok) throw data;
-        // Save basic session
+
+        // ✅ Save session with JWT + role
+        localStorage.setItem('edu_token', data.token);
         localStorage.setItem('edu_user', JSON.stringify(data.user));
+
+        // Friendly welcome
+        alert(`Welcome ${data.user.name}! You are logged in as ${data.user.role}.`);
+
+        // Redirect home
         window.location = 'index.html';
       } catch (err) {
-        document.getElementById('login-msg').innerText = err.message || err.error || 'Login failed';
+        document.getElementById('login-msg').innerText =
+          err.message || err.error || 'Login failed';
       }
     });
   </script>
