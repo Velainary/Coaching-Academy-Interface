@@ -21,7 +21,7 @@
   <main class="container">
     <h2>Instructors</h2>
 
-    <!-- ADMIN-ONLY FORM -->
+    <!-- TEACHER-ONLY FORM -->
     <section class="card admin-only" style="display:none;">
       <label>Name</label>
       <input id="instr-name" type="text" placeholder="Full name">
@@ -36,7 +36,7 @@
   </main>
 
   <footer>© 2025 EduConnect</footer>
-  <script src="auth.js"></script> <!-- universal script for login/role -->
+  <script src="auth.js"></script>
   <script>
     async function loadInstructors(){
       const res = await fetch('/api/instructors');
@@ -46,12 +46,14 @@
       data.forEach(i=>{
         const el = document.createElement('div');
         el.className = 'instructor-card';
-        el.innerHTML = `<h4>${escapeHtml(i.name)}</h4><p><strong>${escapeHtml(i.subject || '')}</strong></p><p>${escapeHtml(i.bio || '')}</p>`;
+        el.innerHTML = `<h4>${escapeHtml(i.name)}</h4>
+                        <p><strong>${escapeHtml(i.subject || '')}</strong></p>
+                        <p>${escapeHtml(i.bio || '')}</p>`;
         container.appendChild(el);
       });
     }
 
-    document.getElementById('add-instr').addEventListener('click', async ()=>{
+    document.getElementById('add-instr')?.addEventListener('click', async ()=>{
       const name = document.getElementById('instr-name').value.trim();
       const subject = document.getElementById('instr-subject').value.trim();
       const bio = document.getElementById('instr-bio').value.trim();
@@ -72,12 +74,14 @@
     });
 
     function escapeHtml(s = '') {
-      return s.replace(/[&<>"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+      return s.replace(/[&<>"]/g, (c) => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'
+      }[c]));
     }
 
     // === INIT ===
     loadInstructors();
-    enforceRoleAccess(); // this comes from auth.js
+    enforceRoleAccess();
   </script>
 </body>
 </html>

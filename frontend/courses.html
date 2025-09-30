@@ -21,8 +21,8 @@
   <main class="container">
     <h2>Courses</h2>
 
-    <!-- Teacher-only section -->
-    <section class="card admin-only">
+    <!-- TEACHER-ONLY FORM -->
+    <section class="card admin-only" style="display:none;">
       <h3>Add Course</h3>
       <label>Subject</label>
       <input id="course-subject" type="text" placeholder="e.g. Mathematics">
@@ -31,71 +31,50 @@
       <button id="add-course" class="btn">Add Course</button>
     </section>
 
-    <!-- Visible to all -->
     <section id="course-list" class="grid"></section>
   </main>
 
   <footer>© 2025 EduConnect</footer>
-
-  <script src="app.js"></script>
   <script src="auth.js"></script>
   <script>
-    // Require login to view this page
-    const user = requireLogin();
-
-    // Load all courses
-    async function loadCourses() {
-      try {
-        const res = await authFetch('/api/courses');
-        if (!res.ok) throw await res.json();
-        const data = await res.json();
-
-        const container = document.getElementById('course-list');
-        container.innerHTML = '';
-
-        data.forEach(c => {
-          const el = document.createElement('div');
-          el.className = 'course-card';
-          el.innerHTML = `
-            <h4>${escapeHtml(c.subject)}</h4>
-            <p>${escapeHtml(c.schedule || '')}</p>
-          `;
-          container.appendChild(el);
-        });
-      } catch (e) {
-        alert('Failed to load courses: ' + (e.error || e.message));
-      }
-    }
-
-    // Teacher-only: add a new course
-    const addBtn = document.getElementById('add-course');
-    if (addBtn) {
-      addBtn.addEventListener('click', async () => {
-        const subject = document.getElementById('course-subject').value.trim();
-        const schedule = document.getElementById('course-schedule').value.trim();
-        if (!subject) return alert('Subject required');
-        try {
-          const res = await authFetch('/api/courses', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ subject, schedule })
-          });
-          if (!res.ok) throw await res.json();
-
-          document.getElementById('course-subject').value = '';
-          document.getElementById('course-schedule').value = '';
-          loadCourses();
-        } catch (e) {
-          alert('Add course failed: ' + (e.error || e.message || JSON.stringify(e)));
-        }
+    async function loadCourses(){
+      const res = await fetch('/api/courses');
+      const data = res.ok ? await res.json() : [];
+      const container = document.getElementById('course-list');
+      container.innerHTML = '';
+      data.forEach(c=>{
+        const el = document.createElement('div');
+        el.className = 'course-card';
+        el.innerHTML = `<h4>${escapeHtml(c.subject)}</h4><p>${escapeHtml(c.schedule || '')}</p>`;
+        container.appendChild(el);
       });
     }
 
+    document.getElementById('add-course')?.addEventListener('click', async ()=>{
+      const subject = document.getElementById('course-subject').value.trim();
+      const schedule = document.getElementById('course-schedule').value.trim();
+      if (!subject) return alert('Subject required');
+      try {
+        const res = await fetch('/api/courses', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ subject, schedule })
+        });
+        if(!res.ok) throw await res.json();
+        document.getElementById('course-subject').value = '';
+        document.getElementById('course-schedule').value = '';
+        loadCourses();
+      } catch(e) {
+        alert('Add course failed: '+(e.error||e.message||JSON.stringify(e)));
+      }
+    });
+
     function escapeHtml(s = '') {
-      return s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+      return s.replace(/[&<>"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
     }
 
+    // === INIT ===
     loadCourses();
+    enforceRoleAccess();
   </script>
 </body>
 </html>

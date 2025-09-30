@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -10,66 +10,30 @@
   <header class="nav">
     <div class="brand">EduConnect</div>
     <nav>
-      <a href="index.html">Home</a>
+      <a href="index.html" class="active">Home</a>
       <a href="courses.html">Courses</a>
       <a href="instructors.html">Instructors</a>
       <a href="attendance.html">Attendance</a>
-      <a href="login.html" id="nav-login">Login</a>
+      <a href="login.html">Login</a>
     </nav>
   </header>
 
   <main class="container">
-    <section class="hero">
-      <h1>Tuition, made simple.</h1>
-      <p>Classes, schedules, attendance — all in one place.</p>
-      <div class="cta">
-        <a class="btn" href="courses.html">View Courses</a>
-        <a class="btn ghost" href="login.html">Login / Register</a>
-      </div>
-    </section>
-
-    <section class="quick">
-      <div>
-        <h3 id="stat-students">—</h3>
-        <p>Students</p>
-      </div>
-      <div>
-        <h3 id="stat-courses">—</h3>
-        <p>Courses</p>
-      </div>
-      <div>
-        <h3 id="stat-instructors">—</h3>
-        <p>Instructors</p>
-      </div>
-    </section>
+    <h1>Welcome to EduConnect</h1>
+    <p>EduConnect is a simple platform for students, parents, and teachers to stay connected.</p>
+    <ul>
+      <li>📚 Browse courses</li>
+      <li>👨‍🏫 Meet instructors</li>
+      <li>📝 Track attendance</li>
+      <li>🔐 Secure login for parents, students, and teachers</li>
+    </ul>
   </main>
 
   <footer>© 2025 EduConnect</footer>
-
-  <script src="app.js"></script>
+  <script src="auth.js"></script>
   <script>
-    // Load simple stats
-    (async function() {
-      try {
-        const [usersRes, coursesRes, instrRes] = await Promise.all([
-          fetch('/api/auth/users'),
-          fetch('/api/courses'),
-          fetch('/api/instructors')
-        ]);
-        const users = usersRes.ok ? await usersRes.json() : [];
-        const courses = coursesRes.ok ? await coursesRes.json() : [];
-        const instr = instrRes.ok ? await instrRes.json() : [];
-
-        document.getElementById('stat-students').innerText = users.length;
-        document.getElementById('stat-courses').innerText = courses.length;
-        document.getElementById('stat-instructors').innerText = instr.length;
-      } catch (e) {
-        console.warn('Stats load failed', e);
-      }
-    })();
+    // Keep only nav/login updates, no role restrictions here
+    enforceRoleAccess();
   </script>
-  <script src="app.js"></script>
-<script src="auth.js"></script>
-
 </body>
 </html>

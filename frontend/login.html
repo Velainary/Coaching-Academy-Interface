@@ -14,6 +14,7 @@
       <a href="courses.html">Courses</a>
       <a href="instructors.html">Instructors</a>
       <a href="attendance.html">Attendance</a>
+      <a href="login.html" class="active">Login</a>
     </nav>
   </header>
 
@@ -48,9 +49,9 @@
   </main>
 
   <footer>© 2025 EduConnect</footer>
-  <script src="app.js"></script>
+  <script src="auth.js"></script>
   <script>
-    // ---------- REGISTER ----------
+    // register
     document.getElementById('btn-register').addEventListener('click', async () => {
       const name = document.getElementById('reg-name').value;
       const email = document.getElementById('reg-email').value;
@@ -71,7 +72,7 @@
       }
     });
 
-    // ---------- LOGIN ----------
+    // login
     document.getElementById('btn-login').addEventListener('click', async () => {
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
@@ -83,21 +84,16 @@
         });
         const data = await res.json();
         if (!res.ok) throw data;
-
-        // ✅ Save session with JWT + role
-        localStorage.setItem('edu_token', data.token);
+        // Save basic session
         localStorage.setItem('edu_user', JSON.stringify(data.user));
-
-        // Friendly welcome
-        alert(`Welcome ${data.user.name}! You are logged in as ${data.user.role}.`);
-
-        // Redirect home
         window.location = 'index.html';
       } catch (err) {
-        document.getElementById('login-msg').innerText =
-          err.message || err.error || 'Login failed';
+        document.getElementById('login-msg').innerText = err.message || err.error || 'Login failed';
       }
     });
+
+    // === INIT ===
+    enforceRoleAccess();
   </script>
 </body>
 </html>
