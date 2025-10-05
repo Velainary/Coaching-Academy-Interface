@@ -7,16 +7,16 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="nav">
-    <div class="brand">EduConnect</div>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="courses.html">Courses</a>
-      <a href="instructors.html">Instructors</a>
-      <a href="attendance.html">Attendance</a>
-      <a href="login.html" class="active">Login</a>
-    </nav>
-  </header>
+<header class="nav">
+  <div class="brand">EduConnect</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="courses.html">Courses</a>
+    <a href="instructors.html">Instructors</a>
+    <a href="attendance.html">Attendance</a>
+    <a href="login.html" class="nav-login">Login</a>
+  </nav>
+</header>
 
   <main class="container narrow">
     <h2>Login</h2>
@@ -49,51 +49,53 @@
   </main>
 
   <footer>© 2025 EduConnect</footer>
-  <script src="auth.js"></script>
   <script>
-    // register
-    document.getElementById('btn-register').addEventListener('click', async () => {
-      const name = document.getElementById('reg-name').value;
-      const email = document.getElementById('reg-email').value;
-      const password = document.getElementById('reg-password').value;
-      const role = document.getElementById('reg-role').value;
+document.getElementById('btn-login').addEventListener('click', async (e) => {
+  e.preventDefault();
+  const username = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value.trim();
+  const msgBox = document.getElementById('login-msg');
 
-      try {
-        const res = await fetch('/api/auth/register', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({name,email,password,role})
-        });
-        const data = await res.json();
-        if (!res.ok) throw data;
-        alert('Registered! You can now login.');
-      } catch (err) {
-        alert('Register error: ' + (err.error || err.message || JSON.stringify(err)));
-      }
+  if (!username || !password) {
+    msgBox.textContent = "Please fill in all fields.";
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
     });
 
-    // login
-    document.getElementById('btn-login').addEventListener('click', async () => {
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-      try {
-        const res = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({email,password})
-        });
-        const data = await res.json();
-        if (!res.ok) throw data;
-        // Save basic session
-        localStorage.setItem('edu_user', JSON.stringify(data.user));
-        window.location = 'index.html';
-      } catch (err) {
-        document.getElementById('login-msg').innerText = err.message || err.error || 'Login failed';
-      }
-    });
+    const data = await res.json();
 
-    // === INIT ===
-    enforceRoleAccess();
-  </script>
+    if (res.ok && data.success) {
+      // Store login info
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      // Show success
+      msgBox.style.color = "green";
+      msgBox.textContent = `Welcome, ${data.user.username} (${data.user.role})!`;
+
+      // Redirect based on role
+      setTimeout(() => {
+        if (data.user.role === "admin") window.location = "admin.html";
+        else if (data.user.role === "student") window.location = "student.html";
+        else if (data.user.role === "parent") window.location = "parent.html";
+        else window.location = "index.html";
+      }, 1200);
+    } else {
+      msgBox.style.color = "crimson";
+      msgBox.textContent = data.message || "Invalid credentials.";
+    }
+  } catch (err) {
+    msgBox.style.color = "crimson";
+    msgBox.textContent = "Network error, please try again.";
+    console.error(err);
+  }
+});
+</script>
+<script src="auth.js"></script>
 </body>
 </html>
