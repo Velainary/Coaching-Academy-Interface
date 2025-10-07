@@ -49,50 +49,47 @@
   </main>
 
   <footer>© 2025 EduConnect</footer>
-  <script>
-document.getElementById('btn-login').addEventListener('click', async (e) => {
+<script>
+document.getElementById("btn-login").addEventListener("click", async (e) => {
   e.preventDefault();
-  const username = document.getElementById('login-email').value.trim();
-  const password = document.getElementById('login-password').value.trim();
-  const msgBox = document.getElementById('login-msg');
 
-  if (!username || !password) {
-    msgBox.textContent = "Please fill in all fields.";
+  const email = document.getElementById("login-email").value.trim();
+  const password = document.getElementById("login-password").value.trim();
+  const msgBox = document.getElementById("login-msg");
+
+  if (!email || !password) {
+    msgBox.textContent = "Please enter both email and password.";
     return;
   }
 
   try {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
     });
 
     const data = await res.json();
 
-    if (res.ok && data.success) {
-      // Store login info
-      localStorage.setItem('user', JSON.stringify(data.user));
-
-      // Show success
-      msgBox.style.color = "green";
-      msgBox.textContent = `Welcome, ${data.user.username} (${data.user.role})!`;
-
-      // Redirect based on role
-      setTimeout(() => {
-        if (data.user.role === "admin") window.location = "admin.html";
-        else if (data.user.role === "student") window.location = "student.html";
-        else if (data.user.role === "parent") window.location = "parent.html";
-        else window.location = "index.html";
-      }, 1200);
-    } else {
-      msgBox.style.color = "crimson";
-      msgBox.textContent = data.message || "Invalid credentials.";
+    if (!res.ok) {
+      msgBox.textContent = data.error || "Invalid credentials.";
+      return;
     }
+
+    // Store user + token for session
+    localStorage.setItem("edu_user", JSON.stringify(data.user));
+    localStorage.setItem("edu_token", data.token);
+
+    msgBox.style.color = "green";
+    msgBox.textContent = `Welcome ${data.user.name || data.user.email}! Redirecting...`;
+
+    // Redirect after short delay
+    setTimeout(() => {
+      window.location = "index.html";
+    }, 1000);
   } catch (err) {
-    msgBox.style.color = "crimson";
-    msgBox.textContent = "Network error, please try again.";
     console.error(err);
+    msgBox.textContent = "Network error. Please try again.";
   }
 });
 </script>
