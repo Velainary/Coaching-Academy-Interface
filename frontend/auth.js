@@ -1,85 +1,93 @@
-// frontend/js/auth.js
-// Load this script in every page (after app.js or main logic)
+// ====== FRONTEND AUTH.JS ======
 
-// ===== USER + TOKEN HELPERS =====
+// --- Session helpers ---
 function getCurrentUser() {
   try {
-    return JSON.parse(localStorage.getItem('edu_user') || 'null');
+    return JSON.parse(localStorage.getItem("edu_user"));
   } catch {
     return null;
   }
 }
 
 function getToken() {
-  return localStorage.getItem('edu_token');
+  return localStorage.getItem("edu_token");
 }
 
-// ===== AUTH STATE HANDLERS =====
-function setLoginState(user, token) {
-  localStorage.setItem('edu_user', JSON.stringify(user));
-  localStorage.setItem('edu_token', token);
+function logout() {
+  localStorage.removeItem("edu_user");
+  localStorage.removeItem("edu_token");
+  window.location = "login.html";
 }
 
-function clearLoginState() {
-  localStorage.removeItem('edu_user');
-  localStorage.removeItem('edu_token');
+// --- Auth protection ---
+function requireLogin() {
+  const user = getCurrentUser();
+  if (!user) {
+    alert("Please log in first.");
+    window.location = "login.html";
+    return false;
+  }
+  return true;
 }
 
-// ===== FETCH WRAPPER =====
+// --- Role check ---
+function isTeacher() {
+  const user = getCurrentUser();
+  return user && user.role === "teacher";
+}
+
+// --- Role-based visibility ---
+function applyRoleVisibility() {
+  const user = getCurrentUser();
+  if (!user) return;
+
+  document.querySelectorAll(".admin-only").forEach((el) => {
+    el.style.display = isTeacher() ? "" : "none";
+  });
+}
+
+// --- Token-aware fetch wrapper ---
 async function authFetch(url, options = {}) {
   const token = getToken();
   const headers = options.headers || {};
-  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  headers["Content-Type"] = headers["Content-Type"] || "application/json";
+
   options.headers = headers;
 
   const res = await fetch(url, options);
+
   if (res.status === 401 || res.status === 403) {
     alert("Session expired or unauthorized. Please log in again.");
-    clearLoginState();
-    window.location = 'login.html';
+    logout();
     return;
   }
+
   return res;
 }
 
-// ===== UI ROLE VISIBILITY =====
-function applyRoleVisibility() {
+// --- Show logged-in user info in navbar ---
+function updateNavbarUser() {
   const user = getCurrentUser();
-  const isTeacher = user && user.role === 'teacher';
+  const navLogin = document.querySelector(".nav-login");
 
-  // Hide/show elements by class
-  document.querySelectorAll('.admin-only').forEach(el => {
-    el.style.display = isTeacher ? '' : 'none';
-  });
-
-  // Update nav/login button state
-  const navLogin = document.querySelector('.nav-login');
-  if (navLogin) {
-    if (user) {
-      navLogin.textContent = `Logout (${user.name || user.email})`;
-      navLogin.href = '#';
-      navLogin.addEventListener('click', (e) => {
-        e.preventDefault();
-        clearLoginState();
-        window.location = 'login.html';
-      });
-    } else {
-      navLogin.textContent = 'Login';
-      navLogin.href = 'login.html';
-    }
+  if (!navLogin) return;
+  if (user) {
+    navLogin.textContent = `Logout (${user.role})`;
+    navLogin.href = "#";
+    navLogin.onclick = (e) => {
+      e.preventDefault();
+      logout();
+    };
+  } else {
+    navLogin.textContent = "Login";
+    navLogin.href = "login.html";
   }
 }
 
-// ===== ON LOAD =====
-document.addEventListener('DOMContentLoaded', () => {
+// --- Initialize ---
+document.addEventListener("DOMContentLoaded", () => {
   applyRoleVisibility();
-});
-window.addEventListener("DOMContentLoaded", () => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  const navLogin = document.querySelector(".nav-login");
-  
-  if (user) {
-    navLogin.textContent = `Logged in as ${user.role}`;
-    navLogin.href = "#";
-  }
+  updateNavbarUser();
 });

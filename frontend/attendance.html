@@ -48,7 +48,7 @@
   <script src="auth.js"></script>
   <script>
     async function loadStudentsAndCourses(){
-      const [uRes, cRes] = await Promise.all([fetch('/api/auth/users'), fetch('/api/courses')]);
+      const [uRes, cRes] = await Promise.all([fetch('/api/auth/users'), authFetch('/api/courses')]);
       const users = uRes.ok ? await uRes.json() : [];
       const courses = cRes.ok ? await cRes.json() : [];
 
@@ -64,7 +64,7 @@
     }
 
     async function loadAttendance(){
-      const res = await fetch('/api/attendance');
+      const res = await authFetch('/api/attendance');
       const data = res.ok ? await res.json() : [];
       const wrap = document.getElementById('att-list');
       wrap.innerHTML = `<table><thead><tr><th>Student</th><th>Course</th><th>Date</th><th>Status</th></tr></thead><tbody>${
@@ -78,7 +78,7 @@
       const date = document.getElementById('att-date').value || new Date().toISOString().slice(0,10);
       const status = document.getElementById('att-status').value;
       try{
-        const res = await fetch('/api/attendance', {
+        const res = await authFetch('/api/attendance', {
           method:'POST', headers:{'Content-Type':'application/json'},
           body: JSON.stringify({ user_id, course_id, date, status })
         });
