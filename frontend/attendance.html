@@ -8,15 +8,15 @@
 </head>
 <body>
   <header class="nav">
-  <div class="brand">EduConnect</div>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="courses.html">Courses</a>
-    <a href="instructors.html">Instructors</a>
-    <a href="attendance.html">Attendance</a>
-    <a href="login.html" class="nav-login">Login</a>
-  </nav>
-</header>
+    <div class="brand">EduConnect</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="courses.html">Courses</a>
+      <a href="instructors.html">Instructors</a>
+      <a href="attendance.html">Attendance</a>
+      <a href="login.html" class="nav-login">Login</a>
+    </nav>
+  </header>
 
   <main class="container">
     <h2>Attendance Sheet</h2>
@@ -24,13 +24,13 @@
     <!-- ADMIN-ONLY FORM -->
     <section class="card admin-only" style="display:none;">
       <label>Student</label>
-      <select id="student-select"></select>
+      <select id="att-student"></select>
 
       <label>Course</label>
-      <select id="course-select"></select>
+      <select id="att-course"></select>
 
       <label>Date</label>
-      <input id="att-date" type="date" value="">
+      <input id="att-date" type="date">
 
       <label>Status</label>
       <select id="att-status">
@@ -47,53 +47,100 @@
   <footer>© 2025 EduConnect</footer>
   <script src="auth.js"></script>
   <script>
-    async function loadStudentsAndCourses(){
-      const [uRes, cRes] = await Promise.all([fetch('/api/auth/users'), authFetch('/api/courses')]);
-      const users = uRes.ok ? await uRes.json() : [];
-      const courses = cRes.ok ? await cRes.json() : [];
+    async function loadStudentsAndCourses() {
+      try {
+        const [uRes, cRes] = await Promise.all([
+          authFetch('/api/users'),
+          authFetch('/api/courses')
+        ]);
 
-      const studentSelect = document.getElementById('student-select');
-      studentSelect.innerHTML = '';
-      users.forEach(u => {
-        studentSelect.innerHTML += `<option value="${u.id}">${u.name} (${u.role})</option>`;
-      });
+        const users = uRes.ok ? await uRes.json() : [];
+        const courses = cRes.ok ? await cRes.json() : [];
 
-      const courseSelect = document.getElementById('course-select');
-      courseSelect.innerHTML = '';
-      courses.forEach(c => courseSelect.innerHTML += `<option value="${c.id}">${c.title || c.subject}</option>`);
+        const studentSelect = document.getElementById('att-student');
+        studentSelect.innerHTML = '';
+        users
+          .filter(u => u.role === 'student')
+          .forEach(u => {
+            studentSelect.innerHTML += `<option value="${u.id}">${u.name || u.username}</option>`;
+          });
+
+        const courseSelect = document.getElementById('att-course');
+        courseSelect.innerHTML = '';
+        courses.forEach(c => {
+          courseSelect.innerHTML += `<option value="${c.id}">${c.title || c.name || c.subject}</option>`;
+        });
+      } catch (err) {
+        console.error('Failed to load users/courses', err);
+      }
     }
 
-    async function loadAttendance(){
-      const res = await authFetch('/api/attendance');
-      const data = res.ok ? await res.json() : [];
-      const wrap = document.getElementById('att-list');
-      wrap.innerHTML = `<table><thead><tr><th>Student</th><th>Course</th><th>Date</th><th>Status</th></tr></thead><tbody>${
-        data.map(r => `<tr><td>${r.student}</td><td>${r.course}</td><td>${r.date}</td><td>${r.status}</td></tr>`).join('')
-      }</tbody></table>`;
+    async function loadAttendance() {
+      try {
+        const res = await authFetch('/api/attendance');
+        const data = res.ok ? await res.json() : [];
+        const wrap = document.getElementById('att-list');
+
+        if (!Array.isArray(data) || data.length === 0) {
+          wrap.innerHTML = '<p>No attendance records found.</p>';
+          return;
+        }
+
+        wrap.innerHTML = `
+          <table>
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Course</th>
+                <th>Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${data.map(r => `
+                <tr>
+                  <td>${r.student?.name || r.student_name || 'Unknown'}</td>
+                  <td>${r.course?.title || r.course_name || 'Unknown'}</td>
+                  <td>${r.date}</td>
+                  <td>${r.status}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>`;
+      } catch (err) {
+        console.error('Failed to load attendance', err);
+      }
     }
 
-    document.getElementById('mark-att').addEventListener('click', async ()=>{
-      const user_id = document.getElementById('student-select').value;
-      const course_id = document.getElementById('course-select').value;
+    document.getElementById('mark-att').addEventListener('click', async () => {
+      const user_id = document.getElementById('att-student').value;
+      const course_id = document.getElementById('att-course').value;
       const date = document.getElementById('att-date').value || new Date().toISOString().slice(0,10);
       const status = document.getElementById('att-status').value;
-      try{
+
+      try {
         const res = await authFetch('/api/attendance', {
-          method:'POST', headers:{'Content-Type':'application/json'},
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
           body: JSON.stringify({ user_id, course_id, date, status })
         });
-        if(!res.ok) throw await res.json();
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.message || 'Failed');
+        }
+
+        alert('Attendance marked successfully!');
         loadAttendance();
-      }catch(e){ alert('Mark failed: '+(e.error||e.message||JSON.stringify(e))); }
+      } catch (e) {
+        alert('Mark failed: ' + e.message);
+      }
     });
 
-    // === INIT ===
-    (function init(){
-      // set default date to today
+    (function init() {
       document.getElementById('att-date').value = new Date().toISOString().slice(0,10);
+      enforceRoleAccess(); // from auth.js
       loadStudentsAndCourses();
       loadAttendance();
-      enforceRoleAccess(); // from auth.js
     })();
   </script>
 </body>
