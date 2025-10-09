@@ -36,45 +36,87 @@
 
   <footer>© 2025 EduConnect</footer>
   <script src="auth.js"></script>
-  <script>
-    async function loadCourses(){
+<script src="auth.js"></script>
+<script>
+  function escapeHtml(s = '') {
+    return String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+  }
+
+  async function loadCourses(){
+    try {
       const res = await authFetch('/api/courses');
-      const data = res.ok ? await res.json() : [];
+      const data = res && res.ok ? await res.json() : [];
       const container = document.getElementById('course-list');
       container.innerHTML = '';
       data.forEach(c=>{
         const el = document.createElement('div');
         el.className = 'course-card';
-        el.innerHTML = `<h4>${escapeHtml(c.subject)}</h4><p>${escapeHtml(c.schedule || '')}</p>`;
+        el.dataset.id = c.id;
+        el.innerHTML = `
+          <h4>${escapeHtml(c.subject)}</h4>
+          <p>${escapeHtml(c.schedule || '')}</p>
+          ${ (typeof isTeacher === 'function' && isTeacher()) ? `
+            <div class="admin-only actions">
+              <button class="edit-course" data-id="${c.id}">✏️ Edit</button>
+              <button class="del-course" data-id="${c.id}">🗑️ Delete</button>
+            </div>` : '' }
+        `;
         container.appendChild(el);
       });
-    }
 
-    document.getElementById('add-course')?.addEventListener('click', async ()=>{
-      const subject = document.getElementById('course-subject').value.trim();
-      const schedule = document.getElementById('course-schedule').value.trim();
-      if (!subject) return alert('Subject required');
-      try {
-        const res = await authFetch('/api/courses', {
-          method:'POST', headers:{'Content-Type':'application/json'},
+      // attach handlers
+      document.querySelectorAll('.del-course').forEach(btn => btn.addEventListener('click', async (e)=>{
+        const id = e.target.dataset.id;
+        if (!confirm('Delete this course?')) return;
+        const r = await authFetch(`/api/courses/${id}`, { method: 'DELETE' });
+        if (!r || !r.ok) return alert('Delete failed');
+        loadCourses();
+      }));
+
+      document.querySelectorAll('.edit-course').forEach(btn => btn.addEventListener('click', async (e)=>{
+        const id = e.target.dataset.id;
+        const card = e.target.closest('.course-card');
+        const oldSubject = card.querySelector('h4').textContent.trim();
+        const oldSchedule = card.querySelector('p').textContent.trim();
+        const subject = prompt('New subject:', oldSubject);
+        if (!subject) return;
+        const schedule = prompt('New schedule/notes (optional):', oldSchedule);
+        const r = await authFetch(`/api/courses/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ subject, schedule })
         });
-        if(!res.ok) throw await res.json();
-        document.getElementById('course-subject').value = '';
-        document.getElementById('course-schedule').value = '';
+        if (!r || !r.ok) return alert('Update failed');
         loadCourses();
-      } catch(e) {
-        alert('Add course failed: '+(e.error||e.message||JSON.stringify(e)));
-      }
-    });
+      }));
 
-    function escapeHtml(s = '') {
-      return s.replace(/[&<>"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+      applyRoleVisibility();
+    } catch (err) {
+      console.error(err);
     }
+  }
 
-    // === INIT ===
-    loadCourses();
-    enforceRoleAccess();
-  </script>
+  document.getElementById('add-course')?.addEventListener('click', async ()=>{
+    const subject = document.getElementById('course-subject').value.trim();
+    const schedule = document.getElementById('course-schedule').value.trim();
+    if (!subject) return alert('Subject required');
+    try {
+      const res = await authFetch('/api/courses', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ subject, schedule })
+      });
+      if(!res || !res.ok) throw await res.json();
+      document.getElementById('course-subject').value = '';
+      document.getElementById('course-schedule').value = '';
+      loadCourses();
+    } catch(e) {
+      alert('Add course failed: '+(e.error||e.message||JSON.stringify(e)));
+    }
+  });
+
+  // INITIALIZE
+  loadCourses();
+  applyRoleVisibility();
+</script>
 </body>
 </html>

@@ -83,35 +83,75 @@
     }
 
     async function loadAttendance() {
-      try {
-        const res = await authFetch('/api/attendance');
-        const data = res && res.ok ? await res.json() : [];
-        const wrap = document.getElementById('att-list');
+  try {
+    const res = await authFetch('/api/attendance');
+    const data = res && res.ok ? await res.json() : [];
+    const wrap = document.getElementById('att-list');
 
-        if (!Array.isArray(data) || data.length === 0) {
-          wrap.innerHTML = '<p>No attendance records found.</p>';
-          return;
-        }
-
-        wrap.innerHTML = `
-          <table>
-            <thead>
-              <tr><th>Student</th><th>Course</th><th>Date</th><th>Status</th></tr>
-            </thead>
-            <tbody>
-              ${data.map(r => `
-                <tr>
-                  <td>${escapeHtml(r.student_name || r.student || (r.student && r.student.name) || 'Unknown')}</td>
-                  <td>${escapeHtml(r.course_name || r.course || (r.course && r.course.title) || 'Unknown')}</td>
-                  <td>${escapeHtml(r.date)}</td>
-                  <td>${escapeHtml(r.status)}</td>
-                </tr>`).join('')}
-            </tbody>
-          </table>`;
-      } catch {
-        document.getElementById('att-list').innerHTML = '<p>Failed to load attendance.</p>';
-      }
+    if (!Array.isArray(data) || data.length === 0) {
+      wrap.innerHTML = '<p>No attendance records found.</p>';
+      return;
     }
+
+    const isTeacherUser = typeof isTeacher === 'function' && isTeacher();
+
+    wrap.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Student</th><th>Course</th><th>Date</th><th>Status</th>
+            ${isTeacherUser ? '<th>Actions</th>' : ''}
+          </tr>
+        </thead>
+        <tbody>
+          ${data.map(r => `
+            <tr data-id="${r.id}">
+              <td>${escapeHtml(r.student_name || r.student || 'Unknown')}</td>
+              <td>${escapeHtml(r.course_name || r.course || 'Unknown')}</td>
+              <td>${escapeHtml(r.date)}</td>
+              <td>${escapeHtml(r.status)}</td>
+              ${isTeacherUser ? `
+                <td>
+                  <button class="edit-btn" data-id="${r.id}">Edit</button>
+                  <button class="del-btn" data-id="${r.id}">Delete</button>
+                </td>` : ''}
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
+
+    if (isTeacherUser) {
+      document.querySelectorAll('.del-btn').forEach(btn => btn.addEventListener('click', async e => {
+        const id = e.target.dataset.id;
+        if (!confirm('Delete this record?')) return;
+        await authFetch(`/api/attendance/${id}`, { method: 'DELETE' });
+        await loadAttendance();
+      }));
+
+      document.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', async e => {
+        const id = e.target.dataset.id;
+        const row = e.target.closest('tr');
+        const currentStatus = row.children[3].textContent.trim();
+        const newStatus = prompt('Enter new status (Present/Absent):', currentStatus);
+        if (!newStatus) return;
+
+        await authFetch(`/api/attendance/${id}`, {
+          method: 'PUT',
+          body: JSON.stringify({ 
+            user_id: row.children[0].textContent, 
+            course_id: row.children[1].textContent,
+            date: row.children[2].textContent, 
+            status: newStatus 
+          })
+        });
+        await loadAttendance();
+      }));
+    }
+
+  } catch {
+    document.getElementById('att-list').innerHTML = '<p>Failed to load attendance.</p>';
+  }
+}
+
 
     document.getElementById('mark-att').addEventListener('click', async () => {
       const user_id = document.getElementById('att-student').value;

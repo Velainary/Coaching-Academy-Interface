@@ -37,51 +37,94 @@
 
   <footer>© 2025 EduConnect</footer>
   <script src="auth.js"></script>
-  <script>
-    async function loadInstructors(){
+  <script src="auth.js"></script>
+<script>
+  function escapeHtml(s = '') {
+    return String(s || '').replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+  }
+
+  async function loadInstructors(){
+    try {
       const res = await authFetch('/api/instructors');
-      const data = res.ok ? await res.json() : [];
+      const data = res && res.ok ? await res.json() : [];
       const container = document.getElementById('instr-list');
       container.innerHTML = '';
       data.forEach(i=>{
         const el = document.createElement('div');
         el.className = 'instructor-card';
-        el.innerHTML = `<h4>${escapeHtml(i.name)}</h4>
-                        <p><strong>${escapeHtml(i.subject || '')}</strong></p>
-                        <p>${escapeHtml(i.bio || '')}</p>`;
+        el.dataset.id = i.id;
+        el.innerHTML = `
+          <h4>${escapeHtml(i.name)}</h4>
+          <p><strong>${escapeHtml(i.subject || '')}</strong></p>
+          <p>${escapeHtml(i.bio || '')}</p>
+          ${ (typeof isTeacher === 'function' && isTeacher()) ? `
+            <div class="admin-only actions">
+              <button class="edit-instr" data-id="${i.id}">✏️ Edit</button>
+              <button class="del-instr" data-id="${i.id}">🗑️ Delete</button>
+            </div>` : '' }
+        `;
         container.appendChild(el);
       });
-    }
 
-    document.getElementById('add-instr')?.addEventListener('click', async ()=>{
-      const name = document.getElementById('instr-name').value.trim();
-      const subject = document.getElementById('instr-subject').value.trim();
-      const bio = document.getElementById('instr-bio').value.trim();
-      if (!name) return alert('Name required');
-      try {
-        const res = await authFetch('/api/instructors', {
-          method:'POST', headers:{'Content-Type':'application/json'},
+      // handlers
+      document.querySelectorAll('.del-instr').forEach(btn => btn.addEventListener('click', async (e)=>{
+        const id = e.target.dataset.id;
+        if (!confirm('Delete this instructor?')) return;
+        const r = await authFetch(`/api/instructors/${id}`, { method: 'DELETE' });
+        if (!r || !r.ok) return alert('Delete failed');
+        loadInstructors();
+      }));
+
+      document.querySelectorAll('.edit-instr').forEach(btn => btn.addEventListener('click', async (e)=>{
+        const id = e.target.dataset.id;
+        const card = e.target.closest('.instructor-card');
+        const oldName = card.querySelector('h4').textContent.trim();
+        const oldSubject = card.querySelector('p strong') ? card.querySelector('p strong').textContent.trim() : '';
+        const oldBio = card.querySelectorAll('p')[1] ? card.querySelectorAll('p')[1].textContent.trim() : '';
+
+        const name = prompt('Name:', oldName);
+        if (!name) return;
+        const subject = prompt('Subject (optional):', oldSubject);
+        const bio = prompt('Bio (optional):', oldBio);
+
+        const r = await authFetch(`/api/instructors/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, subject, bio })
         });
-        if(!res.ok) throw await res.json();
-        document.getElementById('instr-name').value = '';
-        document.getElementById('instr-subject').value = '';
-        document.getElementById('instr-bio').value = '';
+        if (!r || !r.ok) return alert('Update failed');
         loadInstructors();
-      } catch(e) {
-        alert('Add instructor failed: '+(e.error||e.message||JSON.stringify(e)));
-      }
-    });
+      }));
 
-    function escapeHtml(s = '') {
-      return s.replace(/[&<>"]/g, (c) => ({
-        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'
-      }[c]));
+      applyRoleVisibility();
+    } catch (err) {
+      console.error(err);
     }
+  }
 
-    // === INIT ===
-    loadInstructors();
-    enforceRoleAccess();
-  </script>
+  document.getElementById('add-instr')?.addEventListener('click', async ()=>{
+    const name = document.getElementById('instr-name').value.trim();
+    const subject = document.getElementById('instr-subject').value.trim();
+    const bio = document.getElementById('instr-bio').value.trim();
+    if (!name) return alert('Name required');
+    try {
+      const res = await authFetch('/api/instructors', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ name, subject, bio })
+      });
+      if(!res || !res.ok) throw await res.json();
+      document.getElementById('instr-name').value = '';
+      document.getElementById('instr-subject').value = '';
+      document.getElementById('instr-bio').value = '';
+      loadInstructors();
+    } catch(e) {
+      alert('Add instructor failed: '+(e.error||e.message||JSON.stringify(e)));
+    }
+  });
+
+  // INIT
+  loadInstructors();
+  applyRoleVisibility();
+</script>
 </body>
 </html>
