@@ -13,7 +13,7 @@
       <a href="index.html">Home</a>
       <a href="courses.html">Courses</a>
       <a href="instructors.html">Instructors</a>
-      <a href="attendance.html">Attendance</a>
+      <a href="attendance.html" class="active">Attendance</a>
       <a href="login.html" class="nav-login">Login</a>
     </nav>
   </header>
@@ -21,7 +21,7 @@
   <main class="container">
     <h2>Attendance Sheet</h2>
 
-    <!-- ADMIN-ONLY FORM -->
+    <!-- TEACHER-ONLY FORM -->
     <section class="card admin-only" style="display:none;">
       <label>Student</label>
       <select id="att-student"></select>
@@ -45,40 +45,47 @@
   </main>
 
   <footer>© 2025 EduConnect</footer>
+
   <script src="auth.js"></script>
+
   <script>
+    function escapeHtml(s = '') {
+      return String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+    }
+
     async function loadStudentsAndCourses() {
       try {
         const [uRes, cRes] = await Promise.all([
-          authFetch('/api/users'),
+          authFetch('/api/auth/users'),
           authFetch('/api/courses')
         ]);
 
-        const users = uRes.ok ? await uRes.json() : [];
-        const courses = cRes.ok ? await cRes.json() : [];
+        const users = uRes && uRes.ok ? await uRes.json() : [];
+        const courses = cRes && cRes.ok ? await cRes.json() : [];
 
         const studentSelect = document.getElementById('att-student');
         studentSelect.innerHTML = '';
         users
           .filter(u => u.role === 'student')
-          .forEach(u => {
-            studentSelect.innerHTML += `<option value="${u.id}">${u.name || u.username}</option>`;
-          });
+          .forEach(u => studentSelect.insertAdjacentHTML('beforeend',
+            `<option value="${u.id}">${escapeHtml(u.name || u.email)}</option>`));
 
         const courseSelect = document.getElementById('att-course');
         courseSelect.innerHTML = '';
         courses.forEach(c => {
-          courseSelect.innerHTML += `<option value="${c.id}">${c.title || c.name || c.subject}</option>`;
+          const label = c.title || c.subject || c.name || `Course ${c.id}`;
+          courseSelect.insertAdjacentHTML('beforeend',
+            `<option value="${c.id}">${escapeHtml(label)}</option>`);
         });
       } catch (err) {
-        console.error('Failed to load users/courses', err);
+        // quietly ignore
       }
     }
 
     async function loadAttendance() {
       try {
         const res = await authFetch('/api/attendance');
-        const data = res.ok ? await res.json() : [];
+        const data = res && res.ok ? await res.json() : [];
         const wrap = document.getElementById('att-list');
 
         if (!Array.isArray(data) || data.length === 0) {
@@ -89,25 +96,20 @@
         wrap.innerHTML = `
           <table>
             <thead>
-              <tr>
-                <th>Student</th>
-                <th>Course</th>
-                <th>Date</th>
-                <th>Status</th>
-              </tr>
+              <tr><th>Student</th><th>Course</th><th>Date</th><th>Status</th></tr>
             </thead>
             <tbody>
               ${data.map(r => `
                 <tr>
-                  <td>${r.student?.name || r.student_name || 'Unknown'}</td>
-                  <td>${r.course?.title || r.course_name || 'Unknown'}</td>
-                  <td>${r.date}</td>
-                  <td>${r.status}</td>
+                  <td>${escapeHtml(r.student_name || r.student || (r.student && r.student.name) || 'Unknown')}</td>
+                  <td>${escapeHtml(r.course_name || r.course || (r.course && r.course.title) || 'Unknown')}</td>
+                  <td>${escapeHtml(r.date)}</td>
+                  <td>${escapeHtml(r.status)}</td>
                 </tr>`).join('')}
             </tbody>
           </table>`;
-      } catch (err) {
-        console.error('Failed to load attendance', err);
+      } catch {
+        document.getElementById('att-list').innerHTML = '<p>Failed to load attendance.</p>';
       }
     }
 
@@ -117,30 +119,38 @@
       const date = document.getElementById('att-date').value || new Date().toISOString().slice(0,10);
       const status = document.getElementById('att-status').value;
 
+      if (!user_id || !course_id || !date || !status) {
+        alert('Please fill all fields.');
+        return;
+      }
+
       try {
         const res = await authFetch('/api/attendance', {
           method: 'POST',
-          headers: {'Content-Type':'application/json'},
           body: JSON.stringify({ user_id, course_id, date, status })
         });
 
-        if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.message || 'Failed');
-        }
+        if (!res || !res.ok) return; // quietly fail
 
-        alert('Attendance marked successfully!');
-        loadAttendance();
-      } catch (e) {
-        alert('Mark failed: ' + e.message);
+        await loadAttendance(); // refresh silently
+      } catch {
+        // quiet fail
       }
     });
 
-    (function init() {
-      document.getElementById('att-date').value = new Date().toISOString().slice(0,10);
-      enforceRoleAccess(); // from auth.js
-      loadStudentsAndCourses();
-      loadAttendance();
+    (async function init(){
+      if (typeof applyRoleVisibility === 'function') applyRoleVisibility();
+      if (typeof updateNavbarUser === 'function') updateNavbarUser();
+
+      try { document.getElementById('att-date').value = new Date().toISOString().slice(0,10); } catch(e){}
+
+      if (typeof isTeacher === 'function' && isTeacher()) {
+        await loadStudentsAndCourses();
+      } else {
+        try { await authFetch('/api/courses'); } catch(e){}
+      }
+
+      await loadAttendance();
     })();
   </script>
 </body>

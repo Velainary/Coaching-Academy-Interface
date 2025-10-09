@@ -1,14 +1,15 @@
+// backend/routes/attendance.js
 const express = require("express");
 const db = require("../database");
 const router = express.Router();
 
-// ✅ Get attendance (with student + course info)
+// 🟢 GET attendance list (with student + course info)
 router.get("/", (req, res) => {
-  const query = `
+  const sql = `
     SELECT 
       a.id,
       u.name AS student_name,
-      c.title AS course_name,
+      c.subject AS course_name,
       a.date,
       a.status
     FROM attendance a
@@ -16,36 +17,26 @@ router.get("/", (req, res) => {
     LEFT JOIN courses c ON a.course_id = c.id
     ORDER BY a.date DESC
   `;
-
-  db.all(query, [], (err, rows) => {
+  db.all(sql, [], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(rows);
   });
 });
 
-// ✅ Mark attendance
+// 🟢 POST mark attendance
 router.post("/", (req, res) => {
   const { user_id, course_id, date, status } = req.body;
-
   if (!user_id || !course_id || !date || !status) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
-  const query = `
+  const sql = `
     INSERT INTO attendance (user_id, course_id, date, status)
     VALUES (?, ?, ?, ?)
   `;
-
-  db.run(query, [user_id, course_id, date, status], function (err) {
+  db.run(sql, [user_id, course_id, date, status], function (err) {
     if (err) return res.status(500).json({ error: err.message });
-    res.json({ 
-      message: "Attendance marked",
-      id: this.lastID,
-      user_id,
-      course_id,
-      date,
-      status
-    });
+    res.json({ message: "Attendance marked", id: this.lastID });
   });
 });
 
