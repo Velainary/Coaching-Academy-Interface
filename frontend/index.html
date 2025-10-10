@@ -7,30 +7,121 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="nav">
-  <div class="brand">EduConnect</div>
-  <nav>
+<header class="navbar">
+  <div class="nav-brand">
+    <span class="logo">EduConnect</span>
+  </div>
+  <nav class="nav-links">
     <a href="index.html">Home</a>
     <a href="courses.html">Courses</a>
     <a href="instructors.html">Instructors</a>
     <a href="attendance.html">Attendance</a>
-    <a href="login.html" class="nav-login">Login</a>
   </nav>
+  <a href="login.html" class="nav-login-btn nav-login">Login</a>
 </header>
 
-  <main class="container">
+<main class="container">
+  <section class="hero">
     <h1>Welcome to EduConnect</h1>
-    <p>EduConnect is a simple platform for students, parents, and teachers to stay connected.</p>
+    <p>Empowering students, parents, and teachers through a unified digital platform.</p>
+    <p>Track progress, explore courses, and stay connected with your academy — all in one place.</p>
+  </section>
+
+  <!-- About Section -->
+  <section class="card about">
+    <h2>About EduConnect</h2>
+    <p>
+      EduConnect is a modern learning management solution for coaching academies. 
+      We help institutions manage their students, instructors, courses, and attendance with ease. 
+      Our goal is to make education management simple, transparent, and effective for everyone.
+    </p>
     <ul>
-      <li>📚 Browse courses</li>
-      <li>👨‍🏫 Meet instructors</li>
-      <li>📝 Track attendance</li>
-      <li>🔐 Secure login for parents, students, and teachers</li>
+      <li>📘 Streamlined course organization</li>
+      <li>👩‍🏫 Instructor profiles and teaching insights</li>
+      <li>🕓 Real-time attendance tracking</li>
+      <li>💬 Parent-student-teacher communication made easy</li>
     </ul>
-  </main>
+  </section>
+
+  <!-- Slideshow -->
+  <section class="card slideshow">
+    <h2>Inside Our Academy</h2>
+    <div class="slideshow-container">
+      <img src="https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&w=1200&q=60" class="slide active">
+      <img src="https://images.unsplash.com/photo-1584697964154-bf7fda23b9f8?auto=format&fit=crop&w=1200&q=60" class="slide">
+      <img src="https://images.unsplash.com/photo-1581091012184-5c2b46d3c38e?auto=format&fit=crop&w=1200&q=60" class="slide">
+    </div>
+  </section>
+
+  <!-- Reviews -->
+  <section class="card reviews">
+    <h2>What Our Students Say</h2>
+    <div class="review-grid">
+      <div class="review">
+        <p>“EduConnect has made tracking my classes so easy! I never miss attendance anymore.”</p>
+        <span>– Alice, Student</span>
+      </div>
+      <div class="review">
+        <p>“Managing multiple batches and subjects is effortless now. A real time saver.”</p>
+        <span>– Clara, Teacher</span>
+      </div>
+      <div class="review">
+        <p>“Finally, I can see my child’s progress anytime. Transparent and reliable.”</p>
+        <span>– Bob, Parent</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Counter -->
+  <section class="card stats">
+    <h2>EduConnect in Numbers</h2>
+    <div class="stats-grid">
+      <div class="stat">
+        <span id="students-count">0</span>
+        <p>Students Enrolled</p>
+      </div>
+      <div class="stat">
+        <span id="teachers-count">0</span>
+        <p>Instructors</p>
+      </div>
+      <div class="stat">
+        <span id="courses-count">0</span>
+        <p>Courses Offered</p>
+      </div>
+    </div>
+  </section>
+</main>
 
   <footer>© 2025 EduConnect</footer>
-  <script src="auth.js"></script>
+<script src="auth.js"></script>
+<script>
+  // Simple slideshow rotation
+  let slideIndex = 0;
+  const slides = document.querySelectorAll('.slideshow-container .slide');
+  setInterval(() => {
+    slides[slideIndex].classList.remove('active');
+    slideIndex = (slideIndex + 1) % slides.length;
+    slides[slideIndex].classList.add('active');
+  }, 4000);
+
+  // Animate counters
+  function animateCounter(id, endValue, duration = 1500) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    let start = 0;
+    const stepTime = Math.abs(Math.floor(duration / endValue));
+    const timer = setInterval(() => {
+      start++;
+      el.textContent = start.toLocaleString();
+      if (start >= endValue) clearInterval(timer);
+    }, stepTime);
+  }
+
+  // Fake stats for now
+  animateCounter("students-count", 1280);
+  animateCounter("teachers-count", 45);
+  animateCounter("courses-count", 22);
+</script>
   <script>
     // Keep only nav/login updates, no role restrictions here
     enforceRoleAccess();
