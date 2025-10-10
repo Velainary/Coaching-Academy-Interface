@@ -233,3 +233,87 @@ footer{text-align:center;padding:20px;color:#667085;font-size:.9rem;margin-top:2
 .dot:hover {
   background-color: var(--accent);
 }
+/* === Reviews === */
+.reviews {
+  max-width: 1100px;
+  margin: 40px auto;
+  text-align: center;
+}
+
+.reviews h2 {
+  color: var(--primary);
+  margin-bottom: 16px;
+}
+
+.reviews .review-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.review {
+  background: #ffffff;
+  border: 1px solid #e4e7f0;
+  border-radius: 12px;
+  padding: 18px;
+  font-style: italic;
+  box-shadow: 0 6px 20px rgba(10, 42, 102, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.review:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(10, 42, 102, 0.08);
+}
+
+.review span {
+  display: block;
+  text-align: right;
+  font-weight: 600;
+  color: var(--accent);
+  margin-top: 10px;
+  font-style: normal;
+}
+
+/* === Stats === */
+.stats {
+  background: linear-gradient(180deg, #eaf0ff, #ffffff);
+  padding: 40px 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(10, 42, 102, 0.04);
+  margin: 40px auto;
+  max-width: 1100px;
+}
+
+.stats h2 {
+  color: var(--primary);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.stats-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+  text-align: center;
+}
+
+.stat {
+  flex: 1 1 180px;
+}
+
+.stat span {
+  display: block;
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.stat p {
+  margin: 0;
+  font-size: 1rem;
+  color: #4b5563;
+}
