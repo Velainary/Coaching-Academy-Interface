@@ -139,11 +139,20 @@ footer{text-align:center;padding:20px;color:#667085;font-size:.9rem;margin-top:2
 .about li { margin: 6px 0; }
 
 /* === Slideshow === */
+.slideshow-section {
+  margin: 20px auto 30px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(10,42,102,0.08);
+  max-width: 1100px;
+  position: relative;
+}
+
 .slideshow-container {
   position: relative;
-  height: 320px;
+  width: 100%;
+  height: 420px;
   overflow: hidden;
-  border-radius: 10px;
 }
 .slideshow-container img {
   position: absolute;
@@ -154,6 +163,62 @@ footer{text-align:center;padding:20px;color:#667085;font-size:.9rem;margin-top:2
   transition: opacity 1s ease-in-out;
 }
 .slideshow-container img.active { opacity: 1; }
+.slide {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+.slide.active { opacity: 1; }
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Navigation arrows */
+.prev, .next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.8);
+  border: none;
+  font-size: 1.8rem;
+  font-weight: 700;
+  padding: 8px 14px;
+  cursor: pointer;
+  border-radius: 50%;
+  color: var(--primary);
+  transition: all 0.3s;
+}
+.prev:hover, .next:hover {
+  background: var(--accent);
+  color: #fff;
+}
+.prev { left: 20px; }
+.next { right: 20px; }
+
+/* Dots indicator */
+.dots {
+  position: absolute;
+  bottom: 14px;
+  width: 100%;
+  text-align: center;
+}
+.dot {
+  display: inline-block;
+  width: 10px; height: 10px;
+  margin: 0 4px;
+  background-color: rgba(255,255,255,0.6);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.dot.active, .dot:hover {
+  background-color: var(--accent);
+}
 
 /* === Reviews === */
 .reviews .review-grid {

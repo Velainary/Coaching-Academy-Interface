@@ -26,32 +26,32 @@
     <p>Empowering students, parents, and teachers through a unified digital platform.</p>
     <p>Track progress, explore courses, and stay connected with your academy — all in one place.</p>
   </section>
-  
-  <!-- Slideshow -->
-  <section class="card slideshow">
-    <h2>Inside Our Academy</h2>
-    <div class="slideshow-container">
-      <img src="https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&w=1200&q=60" class="slide active">
-      <img src="https://images.unsplash.com/photo-1584697964154-bf7fda23b9f8?auto=format&fit=crop&w=1200&q=60" class="slide">
-      <img src="https://images.unsplash.com/photo-1581091012184-5c2b46d3c38e?auto=format&fit=crop&w=1200&q=60" class="slide">
-    </div>
-  </section>
 
-  <!-- About Section -->
-  <section class="card about">
-    <h2>About EduConnect</h2>
-    <p>
-      EduConnect is a modern learning management solution for coaching academies. 
-      We help institutions manage their students, instructors, courses, and attendance with ease. 
-      Our goal is to make education management simple, transparent, and effective for everyone.
-    </p>
-    <ul>
-      <li>📘 Streamlined course organization</li>
-      <li>👩‍🏫 Instructor profiles and teaching insights</li>
-      <li>🕓 Real-time attendance tracking</li>
-      <li>💬 Parent-student-teacher communication made easy</li>
-    </ul>
-  </section>
+<!-- Slideshow -->
+<section class="slideshow-section">
+  <div class="slideshow-container">
+    <div class="slide active">
+      <img src="https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&w=1200&q=60" alt="Classroom learning">
+    </div>
+    <div class="slide">
+      <img src="https://images.unsplash.com/photo-1584697964154-bf7fda23b9f8?auto=format&fit=crop&w=1200&q=60" alt="Science experiments">
+    </div>
+    <div class="slide">
+      <img src="https://images.unsplash.com/photo-1581091012184-5c2b46d3c38e?auto=format&fit=crop&w=1200&q=60" alt="Digital learning tools">
+    </div>
+
+    <!-- Navigation arrows -->
+    <button class="prev">&#10094;</button>
+    <button class="next">&#10095;</button>
+
+    <!-- Dots indicator -->
+    <div class="dots">
+      <span class="dot active"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </div>
+</section>
 
   <!-- Reviews -->
   <section class="card reviews">
@@ -95,14 +95,47 @@
   <footer>© 2025 EduConnect</footer>
 <script src="auth.js"></script>
 <script>
-  // Simple slideshow rotation
   let slideIndex = 0;
-  const slides = document.querySelectorAll('.slideshow-container .slide');
-  setInterval(() => {
-    slides[slideIndex].classList.remove('active');
-    slideIndex = (slideIndex + 1) % slides.length;
-    slides[slideIndex].classList.add('active');
-  }, 4000);
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.dot');
+  const prevBtn = document.querySelector('.prev');
+  const nextBtn = document.querySelector('.next');
+  let autoSlideTimer;
+
+  function showSlide(n) {
+    slides.forEach((s, i) => {
+      s.classList.toggle('active', i === n);
+      dots[i].classList.toggle('active', i === n);
+    });
+    slideIndex = n;
+  }
+
+  function nextSlide() {
+    let newIndex = (slideIndex + 1) % slides.length;
+    showSlide(newIndex);
+  }
+
+  function prevSlideFunc() {
+    let newIndex = (slideIndex - 1 + slides.length) % slides.length;
+    showSlide(newIndex);
+  }
+
+  function startAutoSlide() {
+    stopAutoSlide();
+    autoSlideTimer = setInterval(nextSlide, 5000);
+  }
+
+  function stopAutoSlide() {
+    clearInterval(autoSlideTimer);
+  }
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => { showSlide(i); startAutoSlide(); });
+  });
+  prevBtn.addEventListener('click', () => { prevSlideFunc(); startAutoSlide(); });
+  nextBtn.addEventListener('click', () => { nextSlide(); startAutoSlide(); });
+
+  startAutoSlide();
 
   // Animate counters
   function animateCounter(id, endValue, duration = 1500) {
