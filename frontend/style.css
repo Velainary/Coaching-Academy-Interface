@@ -408,3 +408,75 @@ footer{text-align:center;padding:20px;color:#667085;font-size:.9rem;margin-top:2
   from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* === WHY CHOOSE US SECTION === */
+.why-choose-us {
+  text-align: center;
+  margin: 40px auto;
+  padding: 40px 20px;
+  background: linear-gradient(180deg, #f9fbff, #ffffff);
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(10, 42, 102, 0.04);
+}
+
+.why-choose-us h2 {
+  color: var(--primary);
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.why-subtext {
+  color: #4b5563;
+  font-size: 1rem;
+  margin-bottom: 30px;
+}
+
+.choose-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.choose-item {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 26px 18px;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(10, 42, 102, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.choose-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(10, 42, 102, 0.08);
+}
+
+.icon-box {
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: #fff;
+  margin: 0 auto 14px;
+}
+
+.icon-box.blue { background: #3b82f6; }
+.icon-box.cyan { background: #06b6d4; }
+.icon-box.teal { background: #0ea5e9; }
+.icon-box.darkblue { background: #1e3a8a; }
+
+.choose-item h3 {
+  color: var(--text);
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.choose-item p {
+  color: #4b5563;
+  font-size: 0.95rem;
+  margin: 0;
+}
