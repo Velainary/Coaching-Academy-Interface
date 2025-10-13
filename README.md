@@ -26,7 +26,6 @@ This project demonstrates core concepts of **web application development**, **au
 | **Backend** | Node.js with Express framework |
 | **Database** | SQLite (file-based relational database) |
 | **Authentication** | JSON Web Tokens (JWT) |
-| **Development Tools** | Nodemon, Live Server, VS Code |
 
 ---
 
