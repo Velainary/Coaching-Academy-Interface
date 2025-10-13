@@ -141,3 +141,15 @@ EduConnect/
 | Clara Teacher  | clara@example.com   | pass123  | teacher  |
 | Alice Student  | alice@example.com   | pass123  | student  |
 | Bob Parent     | bob@example.com     | pass123  | parent   |
+
+---
+
+## 10. Role-Based Permissions
+
+| Action | Teacher | Student | Parent |
+|--------|:-------:|:-------:|:------:|
+| View Courses | ✅ | ✅ | ✅ |
+| Add / Edit / Delete Courses | ✅ | ❌ | ❌ |
+| Manage Instructors | ✅ | ❌ | ❌ |
+| Mark Attendance | ✅ | ❌ | ❌ |
+| View Attendance | ✅ | ✅ | ✅ |
