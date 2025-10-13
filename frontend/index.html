@@ -72,6 +72,15 @@
     </div>
   </section>
 
+<!-- === DYNAMIC NOTICE BOARD SECTION === -->
+  <section class="notice-board" id="notices">
+    <h2>📢 Latest Notices</h2>
+    <p class="notice-subtext">Stay updated with important announcements and exam schedules.</p>
+    <div class="notice-container" id="noticeContainer">
+      <!-- Dynamic notices will be injected here -->
+    </div>
+  </section>
+
   <!-- Stats Counter -->
   <section class="card stats">
     <h2>EduConnect in Numbers</h2>
@@ -154,6 +163,44 @@
   animateCounter("students-count", 1280);
   animateCounter("teachers-count", 45);
   animateCounter("courses-count", 22);
+</script>
+<script>
+  // === Dynamic Notices ===
+  const notices = [
+    {
+      date: "Oct 12, 2025",
+      title: "Mid-Semester Exam Schedule Released",
+      desc: "The MSBTE Winter 2025 timetable has been officially announced. Check the exam section for details."
+    },
+    {
+      date: "Oct 10, 2025",
+      title: "New Batches Starting Soon",
+      desc: "Admissions are open for new Computer Engineering and IT batches beginning from November 1."
+    },
+    {
+      date: "Oct 05, 2025",
+      title: "Fees Payment Reminder",
+      desc: "Students are requested to pay their semester fees before October 20 to avoid late fees."
+    }
+  ];
+
+  const container = document.getElementById("noticeContainer");
+
+  function renderNotices() {
+    container.innerHTML = "";
+    notices.forEach((n) => {
+      const card = document.createElement("div");
+      card.classList.add("notice-card");
+      card.innerHTML = `
+        <span class="date">${n.date}</span>
+        <h3>${n.title}</h3>
+        <p>${n.desc}</p>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", renderNotices);
 </script>
   <script>
     // Keep only nav/login updates, no role restrictions here
