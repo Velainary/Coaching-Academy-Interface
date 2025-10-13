@@ -133,3 +133,11 @@ EduConnect/
 | status | TEXT | ‘Present’ or ‘Absent’ |
 
 ---
+
+## 8. Default Users for Testing
+
+| Name           | Email               | Password | Role     |
+|----------------|---------------------|----------|----------|
+| Clara Teacher  | clara@example.com   | pass123  | teacher  |
+| Alice Student  | alice@example.com   | pass123  | student  |
+| Bob Parent     | bob@example.com     | pass123  | parent   |
