@@ -153,3 +153,38 @@ EduConnect/
 | Manage Instructors | ✅ | ❌ | ❌ |
 | Mark Attendance | ✅ | ❌ | ❌ |
 | View Attendance | ✅ | ✅ | ✅ |
+
+---
+
+## 🔧 Dependencies and Environment Setup
+
+EduConnect requires **Node.js (v16 or later)** and **npm** to be installed on your system.
+
+### 📦 Project Dependencies
+
+| Package | Purpose |
+|----------|----------|
+| **express** | Web framework for Node.js used to create API routes and handle HTTP requests. |
+| **sqlite3** | Database driver used to interact with the SQLite database. |
+| **jsonwebtoken (JWT)** | Used for creating and verifying authentication tokens. |
+| **cors** | Enables Cross-Origin Resource Sharing for frontend–backend communication. |
+| **body-parser** | Parses incoming JSON request bodies for Express. |
+| **path** | Handles file and directory paths for serving static frontend content. |
+
+### 🧰 Development Dependencies
+
+| Package | Purpose |
+|----------|----------|
+| **concurrently** *(optional)* | Allows running multiple commands (e.g., backend + frontend) simultaneously. |
+| **browser-sync** *(optional)* | Provides live-reloading of the frontend while editing files. |
+
+### ⚙️ Installation Commands
+
+Install all required dependencies with:
+```bash
+npm install express sqlite3 jsonwebtoken cors body-parser path
+```
+### To start
+
+```bash
+npm start
